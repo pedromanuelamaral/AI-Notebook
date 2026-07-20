@@ -1,0 +1,58 @@
+# macOS Terminal & Agentic Coding Learning Resources
+## Curated List for NotebookLM Ingestion (July 2026)
+
+This file contains categorized links with brief, neutral descriptions of what each resource covers. 
+Upload this + the attached PDFs (VibeCodingGuide.pdf, Agentic Coding Curriculum Generation.pdf) + the generated macOS_Terminal_Power_User_Guide.md for best synthesis.
+Do NOT include full extracted content here — only links + short context so NotebookLM can retrieve/summarize as needed.
+
+## Your Core Attached Materials (Primary, Tailored Sources)
+- VibeCodingGuide.pdf (local attachment): Progressive 6-module field guide for macOS terminal basics through fluent agentic coding. Covers Terminal, Git, Node/npm, Gemini CLI, Antigravity IDE, and Fluency patterns with exercises and pitfalls.
+- Agentic Coding Curriculum Generation.pdf (local attachment): Advanced phased curriculum critiquing 2025 "vibe coding" heuristics with a comparison table of flaws vs. 2026 spec-driven alternatives ( .agent/ directory, stream piping, EARS specs). Strong emphasis on terminal safety rails and environmental mastery for agents.
+- agentic_coding_bootcamp.tsx (local attachment): React-based interactive lesson UI implementing the module structure with tips, critical pitfalls, practical exercises, and one-click terminal command examples per lesson.
+- image.jpg (local attachment): Visual "15 Rules of Vibe Coding" artifact (with Cursor context) used to illustrate legacy patterns to unlearn, especially around chat management, error handling, and process enjoyment.
+- agent.md (local attachment): Your personal AI system rules, technology stack inventory (Antigravity, Gemini, local LLMs, permission tiers), workspace hygiene protocols, and execution guardrails. Essential context for consistency.
+
+## Your GitHub & Personal Context
+- https://github.com/pedromanuelamaral : Your GitHub profile and repositories (including Arta.ai and hackathon projects). Useful for reviewing real project structures, any existing scripts/dotfiles, and aligning terminal workflows with your broader development and AI agent projects.
+
+## Official Apple Documentation
+- https://support.apple.com/guide/terminal/keyboard-shortcuts-trmlshtcts/mac : Official Apple guide to keyboard shortcuts in the macOS Terminal app. Covers line editing, navigation, window/tab management, and process control — critical for building muscle memory.
+
+## Gemini CLI (Core Tool for Terminal Agentic Loops)
+- https://github.com/google-gemini/gemini-cli : Official open-source Gemini CLI repository. Covers installation (Homebrew, npm), usage for terminal-native AI interactions, and integration patterns.
+- https://geminicli.com/docs/get-started/installation/ : Official installation and quick-start documentation for Gemini CLI on macOS and other platforms. Confirms brew install gemini-cli and authentication methods.
+
+## Google Antigravity (Agentic Platform — IDE + CLI)
+- https://antigravity.google/ : Official site for Google Antigravity, the agentic development platform (terminal-first surface + full IDE). Describes agent orchestration, codebase understanding, and cross-tool workflows aligned with spec-driven development.
+- Related developer resources and codelabs (search "Getting Started with Google Antigravity" on developers.google.com or codelabs.developers.google.com): Practical guides for installing and using Antigravity CLI/IDE for agent management and autonomous task execution.
+
+## Zsh Configuration & Customization Guides
+- https://mybyways.com/blog/macos-zsh-configuration : Practical macOS-specific zsh configuration examples including shell options (nobeep, autocd), useful aliases, history settings, and explanations suitable for power-user expansion of ~/.zshrc.
+- https://luckyboi.medium.com/the-best-setup-for-your-macos-terminal-ever-4d03be234382 : Opinionated modern macOS terminal setup guide discussing themes, shell choices (including Fish as alternative), performance considerations, and overall environment improvements.
+
+## Video & Visual Learning
+- Your existing playlist: https://www.youtube.com/playlist?app=desktop&list=PLrZy_FnT2vQ30DPqr8LnZaMpkWzTbQTg_&ra=m : Curated YouTube playlist already in your sources — excellent for visual command demonstrations and terminal workflows.
+- NetworkChuck "50 macOS Tips and Tricks Using Terminal" (YouTube): Fast-paced practical roundup of common and lesser-known terminal commands, shell switching, and real-world gotchas on macOS.
+
+## Additional Recommended for NotebookLM Synthesis (TUI / Advanced Branching)
+- Search results for "tmux tutorial macOS" or official tmux GitHub/docs: For persistent terminal sessions and multiplexing (recommended follow-up after core fluency).
+- Search results for "fzf zsh integration" or official fzf GitHub: Fuzzy finding for history, files, and processes — high-ROI addition once basics are solid.
+- "lazygit tutorial" or official lazygit repo: Terminal UI for Git that reduces command-line friction for daily version control review.
+- "yazi file manager" or "ranger terminal file manager": Modern terminal file explorers with image/preview support — natural evolution from cd/ls workflows.
+
+## How NotebookLM Can Use This Collection
+- Generate a personalized audio "Terminal Fluency Podcast" series walking through safety rails → piping workflows → .agent/ patterns → customization.
+- Create spaced-repetition Anki-style cards for commands, shortcuts, and anti-patterns from the vibe coding critique.
+- Synthesize a "Day 1-7 Practice Plan" combining exercises from VibeCodingGuide, the bootcamp TSX, and this guide's progressive drills.
+- Cross-reference your agent.md stack and GitHub projects to suggest project-specific terminal commands or .agent/ rule examples.
+- Produce "Before vs After" comparisons of vibe coding vs spec-driven terminal usage with concrete command examples.
+
+Upload order suggestion for best context: 
+1. This .txt file (index + descriptions)
+2. VibeCodingGuide.pdf
+3. Agentic Coding Curriculum Generation.pdf
+4. macOS_Terminal_Power_User_Guide.md (the synthesized guide)
+5. agent.md
+6. The TSX and image.jpg for visual/reference context
+
+This structure lets NotebookLM deeply connect the progressive curriculum, safety philosophy, your personal rules, and current tool reality (Gemini CLI + Antigravity existence confirmed via official sources).
