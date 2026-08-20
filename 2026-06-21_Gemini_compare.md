@@ -1,6 +1,4 @@
-# Gemini Model Comparison: Research Notes
-
-## TL;DR
+# Gemini Model Comparison Research
 
 | Attribute                | **Gemini 3.5 Flash Lite**               | **Gemini 3.5 Flash Old**                | **Gemini 3.6 Flash New**                |
 |--------------------------|------------------------------------------|-----------------------------------------|-----------------------------------------|
@@ -39,10 +37,1768 @@ Acknowledged the visual similarity but highlighted **under-the-hood fixes**:
 3. **Focus Trap**: Fixed keyboard focus bleeding into the background when the modal was open.
 4. **Screen Reader Support**: Added `aria-live="polite"` for dynamic updates.
 
-> *Tone*: **Concise, apologetic, transparent** (4 bullet points).
+<details>
+<summary><b>Code: Gemini 3.5 Flash Lite</b></summary>
 
+```html
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f6f4ef">
+  <title>My Fitness Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  
+  <!-- Early theme initialization to prevent Flash of Incorrect Theme (FOIT) -->
+  <script>
+    try {
+      const savedTheme = localStorage.getItem("myFitnessTheme");
+      const theme = savedTheme === "dark" || savedTheme === "light" ? savedTheme : "light";
+      document.documentElement.dataset.theme = theme;
+    } catch (e) {}
+  </script>
 
-## **2. Gemini 3.5 Flash Old**
+  <style>
+    :root {
+      color-scheme: light;
+      --canvas: #f6f4ef;
+      --paper: #fffefa;
+      --paper-strong: #ffffff;
+      --ink: #191814;
+      --muted: #514d45;
+      --subtle: #6c665c;
+      --line: rgba(25, 24, 20, 0.18);
+      --line-strong: rgba(25, 24, 20, 0.3);
+      --charcoal: #20201d;
+      --charcoal-hover: #35342e;
+      --charcoal-2: #2d2c27;
+      --accent: #b7ff3c;
+      --accent-dark: #4d650c;
+      --warm: #f2e2c4;
+      --blue: #dbeaf1;
+      --green: #dcebd7;
+      --red: #f5d6d3;
+      --orange: #f4d5ad;
+      --shadow: 0 28px 80px rgba(72, 63, 42, 0.12);
+      --radius: 8px;
+      --speed: 260ms;
+      --curve: cubic-bezier(0.32, 0.72, 0, 1);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --inverse-ink: var(--ink);
+    }
+
+    [data-theme="dark"] {
+      color-scheme: dark;
+      --canvas: #11110f;
+      --paper: #191916;
+      --paper-strong: #20201d;
+      --ink: #f4f0e7;
+      --muted: #b4ad9e;
+      --subtle: #857d70;
+      --line: rgba(244, 240, 231, 0.12);
+      --line-strong: rgba(244, 240, 231, 0.22);
+      --charcoal: #f4f0e7;
+      --charcoal-hover: #e0dcd3;
+      --charcoal-2: #d9d2c4;
+      --accent: #b7ff3c;
+      --accent-dark: #d0ff72;
+      --warm: #3a3020;
+      --blue: #1d3340;
+      --green: #223520;
+      --red: #412521;
+      --orange: #432d17;
+      --shadow: 0 28px 80px rgba(0, 0, 0, 0.36);
+      --inverse-ink: #11110f;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      background: var(--canvas);
+      color: var(--ink);
+      font-family: Outfit, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: geometricPrecision;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100dvh;
+      background: var(--canvas);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background:
+        linear-gradient(115deg, rgba(246, 244, 239, 0.9), rgba(246, 244, 239, 0.68)),
+        url("https://images.unsplash.com/photo-1517963879433-6ad2a04a8a2e?w=1800&q=78&auto=format&fit=crop") center / cover;
+    }
+
+    [data-theme="dark"] body::before {
+      background:
+        linear-gradient(115deg, rgba(17, 17, 15, 0.96), rgba(17, 17, 15, 0.82)),
+        url("https://images.unsplash.com/photo-1517963879433-6ad2a04a8a2e?w=1800&q=78&auto=format&fit=crop") center / cover;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      opacity: 0.26;
+      background-image:
+        linear-gradient(rgba(25, 24, 20, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(25, 24, 20, 0.035) 1px, transparent 1px);
+      background-size: 34px 34px;
+      mask-image: linear-gradient(to bottom, #000, transparent 86%);
+    }
+
+    [data-theme="dark"] body::after {
+      opacity: 0.22;
+      background-image:
+        linear-gradient(rgba(244, 240, 231, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(244, 240, 231, 0.045) 1px, transparent 1px);
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button, input { font: inherit; }
+    button { border: 0; cursor: pointer; }
+
+    .skip-link {
+      position: fixed;
+      left: 16px;
+      top: 16px;
+      z-index: 100;
+      transform: translateY(-140%);
+      background: var(--charcoal);
+      color: var(--paper);
+      padding: 10px 14px;
+      border-radius: var(--radius);
+      transition: transform var(--speed) var(--curve);
+    }
+
+    .skip-link:focus { transform: translateY(0); }
+
+    .shell {
+      width: min(1220px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 18px 0 calc(42px + var(--safe-bottom));
+    }
+
+    .topbar {
+      position: sticky;
+      top: 12px;
+      z-index: 40;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 48px;
+      padding: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.52);
+      border-radius: 999px;
+      background: rgba(255, 254, 250, 0.92);
+      box-shadow: 0 12px 40px rgba(73, 64, 45, 0.16);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    [data-theme="dark"] .topbar {
+      border-color: rgba(244, 240, 231, 0.1);
+      background: rgba(25, 25, 22, 0.76);
+      box-shadow: 0 12px 42px rgba(0, 0, 0, 0.26);
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 14px 7px 8px;
+      border-radius: 999px;
+      background: var(--charcoal);
+      color: var(--paper);
+      font-weight: 800;
+    }
+
+    [data-theme="dark"] .brand {
+      background: #0f0f0d;
+      color: var(--ink);
+      border: 1px solid var(--line);
+    }
+
+    .brand-mark,
+    .icon-box {
+      display: inline-grid;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      background: var(--accent);
+      color: var(--ink);
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .nav {
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .nav a,
+    .device button {
+      border-radius: 999px;
+      color: var(--muted);
+      padding: 9px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      transition: background var(--speed) var(--curve), color var(--speed) var(--curve), transform var(--speed) var(--curve);
+      white-space: nowrap;
+    }
+
+    .theme-toggle {
+      min-height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 0 12px;
+      background: var(--paper-strong);
+      color: var(--ink);
+      font-weight: 800;
+      transition: background var(--speed) var(--curve), color var(--speed) var(--curve), transform var(--speed) var(--curve);
+    }
+
+    .theme-toggle:hover {
+      background: var(--accent);
+      color: var(--inverse-ink);
+    }
+
+    [data-theme="dark"] .theme-toggle {
+      background: rgba(244, 240, 231, 0.06);
+    }
+
+    .nav a:hover,
+    .device button:hover,
+    .device button.is-active {
+      background: rgba(25, 24, 20, 0.08);
+      color: var(--ink);
+    }
+
+    .nav a:active,
+    .device button:active,
+    .button:active,
+    .mode-card:active,
+    .video-card:active { transform: scale(0.985); }
+
+    .device {
+      display: flex;
+      gap: 2px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 3px;
+      background: rgba(255, 255, 255, 0.72);
+    }
+
+    [data-theme="dark"] .device {
+      background: rgba(244, 240, 231, 0.06);
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+      gap: clamp(28px, 5vw, 74px);
+      align-items: end;
+      min-height: 62dvh;
+      padding-bottom: 54px;
+    }
+
+    .eyebrow,
+    .section-kicker,
+    .tag,
+    .metric-label {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+      color: var(--accent-dark);
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 44px;
+      height: 2px;
+      background: var(--accent-dark);
+    }
+
+    h1 {
+      max-width: 820px;
+      margin: 0;
+      font-size: clamp(4.2rem, 12vw, 10.5rem);
+      line-height: 0.78;
+      letter-spacing: 0;
+      text-wrap: balance;
+    }
+
+    .hero-copy {
+      max-width: 650px;
+      margin: 26px 0 0;
+      color: var(--charcoal-2);
+      font-size: clamp(1.08rem, 1.7vw, 1.34rem);
+      line-height: 1.42;
+      text-wrap: pretty;
+    }
+
+    .hero-panel {
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.62);
+      background: rgba(255, 254, 250, 0.72);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 10px;
+    }
+
+    [data-theme="dark"] .hero-panel {
+      border-color: rgba(244, 240, 231, 0.1);
+      background: rgba(25, 25, 22, 0.72);
+    }
+
+    .hero-panel-inner {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--paper-strong);
+      overflow: hidden;
+    }
+
+    .hero-panel-head {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: center;
+      padding: 22px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .today {
+      margin: 0;
+      font-weight: 800;
+      font-size: 1.1rem;
+    }
+
+    .today-sub {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .status-dot {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 50% 50%, var(--accent) 0 34%, transparent 36%),
+        conic-gradient(from 0deg, var(--accent), #f4d5ad, #dbeaf1, var(--accent));
+      animation: breathe 2200ms var(--curve) infinite;
+    }
+
+    @keyframes breathe {
+      0%, 100% { transform: scale(0.94); opacity: 0.82; }
+      50% { transform: scale(1); opacity: 1; }
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .metric {
+      padding: 20px 18px;
+      border-right: 1px solid var(--line);
+    }
+
+    .metric:last-child { border-right: 0; }
+
+    .metric-value {
+      display: block;
+      margin-bottom: 6px;
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    .metric-label { color: var(--muted); font-size: 9px; }
+
+    .account-gate {
+      padding: 22px;
+      background: #1c1b18;
+      color: #fffefa;
+    }
+
+    [data-theme="dark"] .account-gate {
+      background: #151512;
+      color: var(--ink);
+    }
+
+    .account-gate p {
+      margin: 0 0 14px;
+      color: rgba(255, 254, 250, 0.76);
+      line-height: 1.5;
+    }
+
+    [data-theme="dark"] .account-gate p {
+      color: var(--muted);
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .hero-actions { margin-top: 26px; }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 42px;
+      border-radius: 7px;
+      padding: 0 14px;
+      background: var(--charcoal);
+      color: var(--paper);
+      font-weight: 800;
+      transition: transform var(--speed) var(--curve), background var(--speed) var(--curve), color var(--speed) var(--curve);
+    }
+
+    .button:hover { background: var(--charcoal-hover); }
+
+    .button.light { background: var(--paper); color: var(--ink); }
+    .button.light:hover { background: var(--accent); color: var(--inverse-ink); }
+
+    [data-theme="dark"] .button.light { background: #f4f0e7; color: #11110f; }
+    [data-theme="dark"] .button.light:hover { background: var(--accent); color: #11110f; }
+
+    .button.ghost { background: transparent; color: var(--muted); border: 1px solid var(--line); }
+    .button.ghost:hover { color: var(--ink); border-color: var(--line-strong); }
+
+    .account-gate .button.ghost,
+    .modal-inner .button.ghost {
+      color: rgba(255, 254, 250, 0.86);
+      border-color: rgba(255, 254, 250, 0.26);
+    }
+
+    .account-gate .button.ghost:hover,
+    .modal-inner .button.ghost:hover {
+      color: #fffefa;
+      border-color: rgba(255, 254, 250, 0.44);
+    }
+
+    [data-theme="dark"] .account-gate .button.ghost,
+    [data-theme="dark"] .modal-inner .button.ghost {
+      color: var(--ink);
+      border-color: var(--line);
+    }
+
+    [data-theme="dark"] .account-gate .button.ghost:hover,
+    [data-theme="dark"] .modal-inner .button.ghost:hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: var(--line-strong);
+    }
+
+    .button .arrow {
+      display: inline-grid;
+      place-items: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.16);
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 12px;
+    }
+
+    .button.light .arrow { background: rgba(25, 24, 20, 0.1); }
+    [data-theme="dark"] .button .arrow { background: rgba(17, 17, 15, 0.15); }
+    [data-theme="dark"] .button.light .arrow { background: rgba(17, 17, 15, 0.15); }
+
+    section {
+      padding: 76px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 0.72fr) minmax(280px, 0.28fr);
+      gap: 24px;
+      align-items: end;
+      margin-bottom: 26px;
+    }
+
+    .section-kicker {
+      display: block;
+      margin-bottom: 11px;
+      color: var(--accent-dark);
+    }
+
+    h2 {
+      margin: 0;
+      max-width: 720px;
+      font-size: clamp(2.1rem, 4vw, 4.8rem);
+      line-height: 0.9;
+      letter-spacing: 0;
+      text-wrap: balance;
+    }
+
+    .section-note {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+      text-wrap: pretty;
+    }
+
+    .mood-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.16fr) minmax(0, 0.84fr);
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .spotify-card {
+      min-width: 0;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: var(--paper-strong);
+      overflow: hidden;
+    }
+
+    .spotify-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .spotify-label strong { font-size: 1rem; }
+    .spotify-label span { color: var(--muted); font-size: 0.9rem; }
+
+    .spotify-card iframe {
+      display: block;
+      width: 100%;
+      height: 152px;
+      border: 0;
+    }
+
+    .mode-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr 1fr;
+      grid-auto-rows: minmax(178px, auto);
+      gap: 14px;
+    }
+
+    .mode-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-height: 178px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--paper-strong);
+      overflow: hidden;
+      transition: transform var(--speed) var(--curve), border-color var(--speed) var(--curve), background var(--speed) var(--curve);
+      text-align: left;
+    }
+
+    .mode-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 7px;
+      background: var(--mode-color, var(--accent));
+      opacity: 0.9;
+    }
+
+    .mode-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--line-strong);
+      background: #fffdf5;
+    }
+
+    [data-theme="dark"] .mode-card:hover {
+      background: #242421;
+      border-color: var(--line-strong);
+    }
+
+    .mode-card.wide { grid-column: span 2; }
+    .mode-card[data-tone="nike"] { --mode-color: #f0a84c; }
+    .mode-card[data-tone="spotify"] { --mode-color: #8fc37d; }
+    .mode-card[data-tone="apple"] { --mode-color: #d98c85; }
+    .mode-card[data-tone="youtube"] { --mode-color: #c93b32; }
+    .mode-card[data-tone="wellness"] { --mode-color: #9cc7dc; }
+
+    .mode-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .mode-card h3 {
+      margin: auto 0 8px;
+      font-size: clamp(1.35rem, 2.1vw, 2.25rem);
+      line-height: 0.95;
+      letter-spacing: 0;
+    }
+
+    .mode-card p {
+      max-width: 36ch;
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.42;
+    }
+
+    .tag {
+      width: max-content;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 5px 7px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.55);
+      font-size: 9px;
+    }
+
+    [data-theme="dark"] .tag {
+      background: rgba(244, 240, 231, 0.06);
+      border-color: var(--line-strong);
+    }
+
+    .library-shell {
+      display: grid;
+      grid-template-columns: 290px minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .library-tools {
+      position: sticky;
+      top: 88px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255, 254, 250, 0.82);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      overflow: hidden;
+    }
+
+    [data-theme="dark"] .library-tools {
+      background: rgba(25, 25, 22, 0.82);
+    }
+
+    .search-wrap {
+      padding: 14px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .search-wrap label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .search {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper-strong);
+      color: var(--ink);
+      padding: 12px 12px;
+      outline: none;
+      transition: border-color var(--speed) var(--curve), box-shadow var(--speed) var(--curve);
+    }
+
+    [data-theme="dark"] .search {
+      background: #151512;
+    }
+
+    .search:focus {
+      border-color: var(--accent-dark);
+      box-shadow: 0 0 0 4px rgba(183, 255, 60, 0.32);
+    }
+
+    .category-list {
+      display: grid;
+      gap: 0;
+      padding: 8px;
+    }
+
+    .category-button {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      width: 100%;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--muted);
+      padding: 11px 10px;
+      text-align: left;
+      transition: background var(--speed) var(--curve), color var(--speed) var(--curve);
+    }
+
+    .category-button:hover,
+    .category-button.is-active {
+      background: var(--charcoal);
+      color: var(--paper);
+    }
+
+    .category-button span:first-child {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-weight: 800;
+    }
+
+    .category-button span:last-child {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 0.78rem;
+    }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .video-card {
+      display: flex;
+      flex-direction: column;
+      min-height: 184px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255, 254, 250, 0.9);
+      overflow: hidden;
+      transition: transform var(--speed) var(--curve), border-color var(--speed) var(--curve), background var(--speed) var(--curve);
+    }
+
+    [data-theme="dark"] .video-card {
+      background: rgba(32, 32, 29, 0.9);
+    }
+
+    .video-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--line-strong);
+      background: var(--paper-strong);
+    }
+
+    [data-theme="dark"] .video-card:hover {
+      background: #242421;
+      border-color: var(--line-strong);
+    }
+
+    .thumb {
+      position: relative;
+      display: block;
+      aspect-ratio: 16 / 9;
+      background: #d9d3c6;
+      overflow: hidden;
+    }
+
+    [data-theme="dark"] .thumb {
+      background: #262623;
+    }
+
+    .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: saturate(0.9) contrast(1.02);
+      transition: transform 520ms var(--curve);
+    }
+
+    .video-card:hover .thumb img { transform: scale(1.045); }
+
+    .duration {
+      position: absolute;
+      right: 8px;
+      bottom: 8px;
+      border-radius: 4px;
+      padding: 3px 6px;
+      background: rgba(25, 24, 20, 0.86);
+      color: var(--paper);
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .video-body {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      padding: 14px;
+    }
+
+    .video-title {
+      margin: 0 0 12px;
+      color: var(--ink);
+      font-size: 1rem;
+      line-height: 1.18;
+      font-weight: 800;
+      text-wrap: pretty;
+    }
+
+    .video-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: auto;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .video-meta span {
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .empty-state {
+      display: none;
+      border: 1px dashed var(--line-strong);
+      border-radius: 14px;
+      padding: 36px 28px;
+      background: rgba(255, 254, 250, 0.72);
+      text-align: center;
+    }
+
+    [data-theme="dark"] .empty-state { background: rgba(25, 24, 22, 0.5); }
+
+    .empty-state.is-visible { display: block; }
+    .empty-state h3 { margin: 0 0 8px; font-size: 1.4rem; }
+    .empty-state p { margin: 0 0 16px; color: var(--muted); }
+
+    .wellness-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 0.52fr);
+      gap: 14px;
+    }
+
+    .recovery-card {
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: var(--paper-strong);
+      padding: 26px;
+    }
+
+    .recovery-card h3 {
+      margin: 0 0 12px;
+      font-size: clamp(1.6rem, 2.4vw, 2.8rem);
+      line-height: 0.96;
+    }
+
+    .recovery-card p {
+      margin: 0 0 18px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .compact-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .compact-link {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: #fbfaf6;
+      font-weight: 800;
+      transition: background var(--speed) var(--curve), transform var(--speed) var(--curve);
+    }
+
+    [data-theme="dark"] .compact-link {
+      background: #181815;
+    }
+
+    .compact-link:hover { background: var(--green); transform: translateY(-1px); }
+    .compact-link span:last-child { color: var(--muted); font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.8rem; }
+
+    footer {
+      padding-top: 28px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      display: none;
+      align-items: end;
+      justify-content: center;
+      padding: 18px;
+    }
+
+    .modal.is-open { display: flex; }
+
+    .modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(25, 24, 20, 0.64);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .modal-card {
+      position: relative;
+      width: min(520px, 100%);
+      border-radius: 18px;
+      background: #1c1b18;
+      color: #fffefa;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      padding: 10px;
+      box-shadow: 0 30px 100px rgba(0, 0, 0, 0.36);
+      transform: translateY(12px);
+      animation: modal-in 320ms var(--curve) forwards;
+    }
+
+    [data-theme="dark"] .modal-card {
+      background: #181816;
+      color: var(--ink);
+      border-color: var(--line-strong);
+    }
+
+    @keyframes modal-in {
+      to { transform: translateY(0); }
+    }
+
+    .modal-inner {
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      padding: 22px;
+    }
+
+    [data-theme="dark"] .modal-inner { border-color: var(--line); }
+
+    .modal-inner h3 {
+      margin: 0 0 10px;
+      font-size: 2rem;
+      line-height: 0.96;
+    }
+
+    .modal-inner p {
+      margin: 0 0 18px;
+      color: rgba(255, 254, 250, 0.72);
+      line-height: 1.55;
+    }
+
+    [data-theme="dark"] .modal-inner p { color: var(--muted); }
+
+    .playlist-stack {
+      display: grid;
+      gap: 8px;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    [data-theme="dark"] .playlist-stack { border-top-color: var(--line); }
+
+    .playlist-stack .button {
+      justify-content: space-between;
+      background: rgba(255, 255, 255, 0.08);
+      color: #fffefa;
+    }
+
+    .playlist-stack .button:hover { background: rgba(255, 255, 255, 0.14); }
+
+    [data-theme="dark"] .playlist-stack .button {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--ink);
+    }
+
+    [data-theme="dark"] .playlist-stack .button:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+    
+    [data-theme="dark"] .playlist-stack .button .arrow {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    [data-device="watch"] .hero { min-height: auto; padding-bottom: 24px; }
+    [data-device="watch"] h1 { font-size: clamp(3.2rem, 16vw, 5.4rem); }
+    [data-device="watch"] .mood-grid,
+    [data-device="watch"] .mode-grid,
+    [data-device="watch"] .library-shell,
+    [data-device="watch"] .wellness-grid { grid-template-columns: 1fr; }
+    [data-device="watch"] .mode-card.wide { grid-column: auto; }
+    [data-device="watch"] .video-grid { grid-template-columns: 1fr; }
+    [data-device="watch"] .spotify-card iframe { height: 92px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 1ms !important;
+        scroll-behavior: auto !important;
+        transition-duration: 1ms !important;
+      }
+    }
+
+    @media (max-width: 1020px) {
+      .hero,
+      .section-head,
+      .mood-grid,
+      .library-shell,
+      .wellness-grid { grid-template-columns: 1fr; }
+      .library-tools { position: static; }
+      .mode-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .mode-card.wide { grid-column: span 2; }
+      .video-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 740px) {
+      .shell { width: min(100% - 24px, 1220px); padding-top: 12px; }
+      .topbar {
+        position: relative;
+        top: 0;
+        grid-template-columns: 1fr;
+        align-items: stretch;
+        border-radius: 14px;
+        margin-bottom: 22px;
+        padding: 8px;
+        gap: 8px;
+      }
+      .brand {
+        width: 100%;
+        justify-content: flex-start;
+        border-radius: 10px;
+      }
+      .top-actions {
+        position: static;
+        grid-column: 1 / -1;
+        align-items: center;
+        justify-content: flex-end;
+      }
+      .theme-toggle {
+        min-height: 40px;
+        border-radius: 8px;
+        padding: 0 11px;
+        background: var(--accent);
+        color: var(--ink);
+        border-color: rgba(25, 24, 20, 0.25);
+      }
+      [data-theme="dark"] .theme-toggle { background: rgba(244, 240, 231, 0.1); }
+      .device { display: none; }
+      .nav {
+        grid-column: 1 / -1;
+        overflow-x: auto;
+        justify-content: flex-start;
+        gap: 6px;
+        padding: 4px 0 0;
+      }
+      .nav a {
+        background: rgba(25, 24, 20, 0.06);
+        padding: 9px 11px;
+      }
+      [data-theme="dark"] .nav a { background: rgba(244, 240, 231, 0.08); }
+      .hero {
+        gap: 22px;
+        min-height: auto;
+        padding: 24px 0 34px;
+      }
+      .eyebrow { margin-bottom: 12px; font-size: 9px; }
+      .eyebrow::before { width: 42px; }
+      h1 {
+        max-width: 8ch;
+        font-size: clamp(3.35rem, 17vw, 4.35rem);
+        line-height: 0.84;
+      }
+      .hero-copy {
+        max-width: 100%;
+        margin-top: 18px;
+        font-size: 1.02rem;
+        line-height: 1.42;
+      }
+      .button-row { gap: 8px; }
+      .button {
+        min-height: 42px;
+        padding: 0 12px;
+        font-size: 0.94rem;
+      }
+      section { padding: 48px 0; }
+      .section-head { gap: 12px; margin-bottom: 18px; }
+      h2 {
+        font-size: clamp(2.35rem, 12vw, 3.3rem);
+        line-height: 0.92;
+      }
+      .section-note { font-size: 0.98rem; }
+      .hero-panel-head,
+      .account-gate,
+      .recovery-card { padding: 18px; }
+      .hero-panel { border-radius: 16px; }
+      .metric-grid { grid-template-columns: 1fr; }
+      .metric { border-right: 0; border-bottom: 1px solid var(--line); }
+      .metric:last-child { border-bottom: 0; }
+      .metric { padding: 15px 18px; }
+      .spotify-label {
+        display: grid;
+        gap: 4px;
+      }
+      .spotify-card iframe { height: 112px; }
+      .mode-card { min-height: 158px; padding: 18px; }
+      .mode-grid,
+      .video-grid { grid-template-columns: 1fr; }
+      .mode-card.wide { grid-column: auto; }
+      .library-shell { gap: 12px; }
+      .category-list {
+        display: flex;
+        gap: 6px;
+        overflow-x: auto;
+        padding: 8px;
+      }
+      .category-button {
+        grid-template-columns: auto auto;
+        flex: 0 0 auto;
+        width: auto;
+      }
+    }
+  </style>
+</head>
+<body data-device="iphone">
+  <a class="skip-link" href="#library">Skip to library</a>
+  <div class="shell">
+    <header class="topbar" aria-label="Primary">
+      <a class="brand" href="#top" aria-label="My Fitness home"><span class="brand-mark" aria-hidden="true">MF</span><span>My Fitness</span></a>
+      <nav class="nav" aria-label="Sections">
+        <a href="#mood">Mood</a>
+        <a href="#modes">Modes</a>
+        <a href="#library">Library</a>
+        <a href="#wellness">Wellness</a>
+      </nav>
+      <div class="top-actions">
+        <button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false">Dark</button>
+        <div class="device" aria-label="Device preview">
+          <button class="is-active" type="button" data-device-target="iphone">iPhone</button>
+          <button type="button" data-device-target="android">Android</button>
+          <button type="button" data-device-target="mac">Mac</button>
+          <button type="button" data-device-target="watch">Watch</button>
+        </div>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="page-title">
+        <div>
+          <span class="eyebrow">Private movement hub</span>
+          <h1 id="page-title">My Fitness</h1>
+          <p class="hero-copy">Pick a mode, set the audio environment, and open training without losing the thread. YouTube routes through an account check first because mixing accounts is exactly the kind of preventable mess this page should stop.</p>
+          <div class="button-row hero-actions">
+            <a class="button" href="#modes">Choose training <span class="arrow" aria-hidden="true">→</span></a>
+            <button class="button ghost" type="button" data-open-youtube>Open YouTube gate</button>
+          </div>
+        </div>
+
+        <aside class="hero-panel" aria-label="Dashboard summary">
+          <div class="hero-panel-inner">
+            <div class="hero-panel-head">
+              <div>
+                <p class="today">Today: choose the lowest-friction session.</p>
+                <p class="today-sub">Music first, workout second, recovery always visible.</p>
+              </div>
+              <span class="status-dot" aria-hidden="true"></span>
+            </div>
+            <div class="metric-grid" aria-label="Library metrics">
+              <div class="metric"><span class="metric-value" id="metricVideos">0</span><span class="metric-label">Videos loaded</span></div>
+              <div class="metric"><span class="metric-value">10</span><span class="metric-label">Categories</span></div>
+              <div class="metric"><span class="metric-value">5</span><span class="metric-label">Training modes</span></div>
+            </div>
+            <div class="account-gate">
+              <p><strong>YouTube account gate.</strong> Before any playlist opens, switch into the managed Fitness account. This page does not pretend it can control Google account state from HTML.</p>
+              <div class="button-row">
+                <a class="button light" href="https://accounts.google.com/ServiceLogin?service=youtube" target="_blank" rel="noopener noreferrer">Switch account <span class="arrow" aria-hidden="true">→</span></a>
+                <button class="button ghost" type="button" data-open-youtube>Playlists</button>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <section id="mood" aria-labelledby="mood-title">
+        <div class="section-head">
+          <div>
+            <span class="section-kicker">Set the mood</span>
+            <h2 id="mood-title">Two audio lanes, no hunting.</h2>
+          </div>
+          <p class="section-note">Keep the players at the top, but frame them as the start of the session instead of random embeds sitting above a link dump.</p>
+        </div>
+        <div class="mood-grid">
+          <article class="spotify-card">
+            <div class="spotify-label"><strong>Focus</strong><span>steady work, warm-up, recovery</span></div>
+            <iframe title="Spotify focus playlist" src="https://open.spotify.com/embed/playlist/37i9dQZF1EIhIOnAU06Sx0?utm_source=generator&theme=0" loading="lazy" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+          </article>
+          <article class="spotify-card">
+            <div class="spotify-label"><strong>Energy</strong><span>harder sessions</span></div>
+            <iframe title="Spotify energy playlist" src="https://open.spotify.com/embed/playlist/37i9dQZF1EpzHyLXxaZMNE?utm_source=generator&theme=0" loading="lazy" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+          </article>
+        </div>
+      </section>
+
+      <section id="modes" aria-labelledby="modes-title">
+        <div class="section-head">
+          <div>
+            <span class="section-kicker">Choose your training mode</span>
+            <h2 id="modes-title">Five routes, each with a job.</h2>
+          </div>
+          <p class="section-note">The buttons are real tap targets. Native-app deep links are kept for iPhone, Android and Mac, with browser fallbacks when the app link cannot open.</p>
+        </div>
+        <div class="mode-grid">
+          <a class="mode-card wide" data-tone="nike" href="https://niketrainingclub.sng.link/Ara19/24fe/6itr" data-web="https://niketrainingclub.sng.link/Ara19/24fe/6itr" data-ios="niketraining://" data-android="intent://niketraining#Intent;scheme=niketraining;package=com.nike.ntc;end">
+            <div class="mode-top"><span class="icon-box">NT</span><span class="tag">Guided</span></div>
+            <h3>Nike Training Club</h3>
+            <p>Use this when you want a planned session with minimal setup and no equipment spiral.</p>
+          </a>
+          <a class="mode-card" data-tone="spotify" href="https://open.spotify.com/genre/0JQ5DAqbMKFJ6dHNHTv6Mx" data-web="https://open.spotify.com/genre/0JQ5DAqbMKFJ6dHNHTv6Mx" data-ios="spotify:genre:0JQ5DAqbMKFJ6dHNHTv6Mx" data-android="intent://open.spotify.com/genre/0JQ5DAqbMKFJ6dHNHTv6Mx#Intent;scheme=https;package=com.spotify.music;end">
+            <div class="mode-top"><span class="icon-box">SP</span><span class="tag">Audio</span></div>
+            <h3>Spotify Fitness</h3>
+            <p>Use music as the driver and let the session follow the pace.</p>
+          </a>
+          <a class="mode-card" data-tone="apple" href="https://fitness.apple.com" data-web="https://fitness.apple.com" data-ios="fitness://" data-mac="fitness://">
+            <div class="mode-top"><span class="icon-box">AF</span><span class="tag">Apple</span></div>
+            <h3>Apple Fitness+</h3>
+            <p>Yoga, core, cooldown and Apple Health logging.</p>
+          </a>
+          <button class="mode-card" data-tone="youtube" type="button" data-open-youtube>
+            <div class="mode-top"><span class="icon-box">YT</span><span class="tag">Gate</span></div>
+            <h3>YouTube Training</h3>
+            <p>Always starts with the account reminder before opening playlists or curated videos.</p>
+          </button>
+          <a class="mode-card wide" data-tone="wellness" href="#wellness">
+            <div class="mode-top"><span class="icon-box">WR</span><span class="tag">Recovery</span></div>
+            <h3>Wellness and recovery</h3>
+            <p>Meditation, stretching and lower-intensity routes stay visible so recovery does not become an afterthought.</p>
+          </a>
+        </div>
+      </section>
+
+      <section id="library" aria-labelledby="library-title">
+        <div class="section-head">
+          <div>
+            <span class="section-kicker">Curated video library</span>
+            <h2 id="library-title">Searchable, grouped, not a thumbnail landfill.</h2>
+          </div>
+          <p class="section-note">The original empty tabs are gone. Counts now come from the data that is actually rendered, and every video opens in a new tab with the account gate still available above.</p>
+        </div>
+        <div class="library-shell">
+          <aside class="library-tools" aria-label="Video filters">
+            <div class="search-wrap">
+              <label for="videoSearch">Search videos</label>
+              <input class="search" id="videoSearch" type="search" placeholder="boxing, core, calm, dumbbell" autocomplete="off">
+            </div>
+            <div class="category-list" id="categoryList"></div>
+          </aside>
+          <div>
+            <div class="video-grid" id="videoGrid" aria-live="polite"></div>
+            <div class="empty-state" id="emptyState">
+              <h3>No videos match that filter.</h3>
+              <p>Try a broader term or clear your filters to view all available sessions.</p>
+              <button class="button light" type="button" id="resetFilterBtn">Reset search &amp; filters</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="wellness" aria-labelledby="wellness-title">
+        <div class="section-head">
+          <div>
+            <span class="section-kicker">Wellness and recovery</span>
+            <h2 id="wellness-title">Recovery is part of the system.</h2>
+          </div>
+          <p class="section-note">This section keeps meditation and Apple Fitness close instead of hiding recovery under the same visual weight as hard training.</p>
+        </div>
+        <div class="wellness-grid">
+          <article class="recovery-card">
+            <h3>Open Apple Fitness+ for yoga, core or cooldown.</h3>
+            <p>Use Fitness+ when you want the session logged cleanly and you do not want YouTube recommendations shaping the next hour.</p>
+            <div class="button-row">
+              <a class="button" href="https://fitness.apple.com" data-web="https://fitness.apple.com" data-ios="fitness://" data-mac="fitness://">Open Fitness+ <span class="arrow" aria-hidden="true">→</span></a>
+              <button class="button ghost" type="button" data-category-jump="Meditation and mindfulness">Meditations</button>
+            </div>
+          </article>
+          <article class="recovery-card">
+            <h3>Quick reset queue.</h3>
+            <p>Short sessions that are useful when the full training library is the wrong tool.</p>
+            <div class="compact-list">
+              <a class="compact-link" href="https://youtu.be/ENYYb5vIMkU" target="_blank" rel="noopener noreferrer"><span>10-minute morning meditation</span><span>10:18</span></a>
+              <a class="compact-link" href="https://youtu.be/aEqlQvczMJQ" target="_blank" rel="noopener noreferrer"><span>10-minute sleep meditation</span><span>10:02</span></a>
+              <a class="compact-link" href="https://youtu.be/zUu0zs9WeSg" target="_blank" rel="noopener noreferrer"><span>Foam rolling recovery</span><span>7:14</span></a>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      My Fitness. Self-contained HTML dashboard. No build step, no accounts stored, no fake login control.
+    </footer>
+  </div>
+
+  <div class="modal" id="youtubeModal" role="dialog" aria-modal="true" aria-labelledby="youtubeModalTitle" aria-hidden="true">
+    <div class="modal-backdrop" data-close-youtube></div>
+    <div class="modal-card">
+      <div class="modal-inner">
+        <h3 id="youtubeModalTitle">Switch YouTube account first.</h3>
+        <p>You have multiple accounts. Open the account switcher, confirm the managed Fitness account, then choose a playlist. This gate is intentionally before the playlist links.</p>
+        <div class="button-row">
+          <a class="button light" href="https://accounts.google.com/ServiceLogin?service=youtube" target="_blank" rel="noopener noreferrer">Switch account <span class="arrow" aria-hidden="true">→</span></a>
+          <button class="button ghost" type="button" data-close-youtube>Cancel</button>
+        </div>
+        <div class="playlist-stack">
+          <a class="button" href="https://youtube.com/playlist?list=PLK9S9qvcANFv5Uo3sM9m-k65P2jgBDxc3" target="_blank" rel="noopener noreferrer">Boxing workouts <span class="arrow" aria-hidden="true">→</span></a>
+          <a class="button" href="https://youtube.com/playlist?list=PLyCLoPd4VxBt9owIB5bTCrViAMIkCVGCb" target="_blank" rel="noopener noreferrer">Leg workouts <span class="arrow" aria-hidden="true">→</span></a>
+          <a class="button" href="https://youtube.com/playlist?list=PLxx3JZXtxiY7Av35ak7Coroz0RQRl6A6I" target="_blank" rel="noopener noreferrer">Full curated library <span class="arrow" aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const DATA = [
+      { category: "Beginner and bodyweight", tone: "green", videos: [
+        ["12 Minute At-Home Workout | No Equipment Needed", "IIuWOk1jbcE", "14:17", "FightCamp", "All levels"],
+        ["Basic Footwork Drills For Beginners | Follow Along", "N_HstpxHnTA", "23:28", "FightCamp", "Beginner"],
+        ["Workout 1 | 15 Minute Ultimate Beginner Home Workout", "CUjV6LCAlvs", "18:48", "The Body Coach TV", "Beginner"],
+        ["Workout 2 | 15 Minute Ultimate Beginner Home Workout", "Yqntd4rmUZQ", "18:32", "The Body Coach TV", "Beginner"],
+        ["Workout 3 | 15 Minute Ultimate Beginner Home Workout", "nGHEhnPh5lA", "18:28", "The Body Coach TV", "Beginner"],
+        ["Workout 4 | 15 Minute Ultimate Beginner Home Workout", "KNhBdh7rAzQ", "18:34", "The Body Coach TV", "Beginner"]
+      ]},
+      { category: "Yoga", tone: "blue", videos: [
+        ["20 Minute Beginners Yoga | Yoga with Lucy", "iUKd8bbgCqw", "23:36", "The Body Coach TV", "Beginner"],
+        ["The Basics of Yoga | Yoga for Beginners", "BRmlJ4HWlxo", "15:34", "The Body Coach TV", "Beginner"],
+        ["Hip Opening Flow | Yoga for Beginners", "1Bq56-x3poE", "16:43", "The Body Coach TV", "Beginner"],
+        ["Hamstring Stretch Flow | Yoga for Beginners", "tVmKjvV-tY0", "14:51", "The Body Coach TV", "Beginner"],
+        ["Mind and Body Flow | Yoga for Beginners", "7ltphXHUIH8", "15:04", "The Body Coach TV", "Beginner"],
+        ["Twist-Focused Flow | Yoga for Beginners", "zYuqGDIx4Lk", "14:44", "The Body Coach TV", "Beginner"],
+        ["Heart Opening Flow | Yoga for Beginners", "IetE0mwtVNg", "15:23", "The Body Coach TV", "Beginner"],
+        ["Creative Flow | Yoga for Beginners", "ZtbJJ3kqWLw", "14:45", "The Body Coach TV", "Beginner"]
+      ]},
+      { category: "Flexibility and mobility", tone: "blue", videos: [
+        ["Foam Rolling For Recovery | Follow Along Routine", "zUu0zs9WeSg", "7:14", "FightCamp", "All levels"],
+        ["Flexibility and Mobility Workout", "nFo5dOhlYUw", "20:55", "TheLeanMachines", "All levels"],
+        ["Beginners Stretching and Flexibility Routine", "21xCQ4VtEL0", "16:18", "TheLeanMachines", "Beginner"],
+        ["Flexibility and Mobility Routine | Upper Body", "pLnI4b3QSgM", "15:13", "TheLeanMachines", "All levels"],
+        ["24 Minute Total Body Foam Rolling Routine", "mpr9IVfrpgg", "25:31", "FightCamp", "All levels"],
+        ["10 Minute Mobility Core Workout", "JTW2NW0WPKM", "12:06", "FightCamp", "All levels"],
+        ["Flexibility and Kicking Full-Length Workout", "4Vjgt4cPtls", "24:34", "FightCamp", "All levels"],
+        ["How to increase flexibility and mobility", "-shl9EgjQdI", "13:16", "TheLeanMachines", "All levels"],
+        ["Flexibility and Mobility For Weightlifting", "nsAmvXgz-Os", "22:42", "TheLeanMachines", "All levels"],
+        ["How To Fix Your Bad Posture", "rNXBDOafJm8", "9:09", "TheLeanMachines", "All levels"],
+        ["Lower Body Stretching Routine", "0eqPHe1r5t8", "24:42", "TheLeanMachines", "All levels"]
+      ]},
+      { category: "Meditation and mindfulness", tone: "green", videos: [
+        ["10-Minute Meditation To Start Your Day", "ENYYb5vIMkU", "10:18", "Goodful", "All levels"],
+        ["Daily Calm | Be Present", "ZToicYcHIOU", "10:30", "Calm", "All levels"],
+        ["10-Minute Meditation For Stress", "z6X5oEIg6Ak", "10:18", "Goodful", "All levels"],
+        ["10-Minute Meditation to Reframe Stress", "sG7DBA-mgFY", "10:10", "Headspace", "All levels"],
+        ["10-Minute Meditation For Depression", "xRxT9cOKiM8", "10:19", "Goodful", "All levels"],
+        ["Daily Calm | Santosha", "5vI8Kh3-epg", "11:17", "Calm", "All levels"],
+        ["10-Minute Meditation For Sleep", "aEqlQvczMJQ", "10:02", "Goodful", "All levels"],
+        ["Reset | Decompress Your Body and Mind", "QHkXvPq2pQE", "10:08", "Headspace", "All levels"],
+        ["10 Minute Guided Meditation for Focus", "ausxoXBrmWs", "10:41", "Declutter The Mind", "All levels"]
+      ]},
+      { category: "HIIT and cardio", tone: "red", videos: [
+        ["10 Min Fat Burning Workout | No Equipment", "UheajlsZ72E", "13:00", "THENX", "All levels"],
+        ["Full Body Fat Burning Workout | 20 Minutes", "8VoV5w4Ea3A", "20:35", "The Body Coach TV", "All levels"],
+        ["Complete 12 Min Fat Burning Workout", "EhY6cGS7F-c", "14:51", "THENX", "All levels"],
+        ["20 Minute Fat Burning Bodyweight Workout", "F-I57N-hsMA", "21:11", "The Body Coach TV", "All levels"],
+        ["15 Minute Medicine Ball HIIT Workout", "s7LwfKnjxto", "17:13", "Juice and Toya", "All levels"],
+        ["10 Minute Cardio and Abs Workout", "urkqbwo6C3c", "10:50", "The Body Coach TV", "All levels"],
+        ["16 Minute Fat Burning Home Workout", "O4bBD6nq6KQ", "18:38", "The Body Coach TV", "All levels"],
+        ["20 Minute Fat Burning Workout | HIIT", "wBurKQX7h4Q", "20:39", "Global Cycling Network", "All levels"],
+        ["Legs and Glute Burning HIIT", "uWaTXQwJWCs", "22:27", "The Body Coach TV", "All levels"],
+        ["20 Minute Full Body HIIT Workout", "GLWgVmlBPiA", "21:48", "FightCamp", "All levels"],
+        ["10-Minute HIIT MMA Workout", "YXyaIHBTHRI", "10:17", "FightCamp", "All levels"],
+        ["Foam Roller Cardio Workout", "BXl1ywp_llw", "6:36", "FightCamp", "All levels"]
+      ]},
+      { category: "Indoor cycling", tone: "orange", videos: [
+        ["20 Minute Indoor Cycling Workout | Cardio Strength", "9MqdWAf4Q3c", "21:32", "RI:ID", "All levels"],
+        ["15 Minute HIIT Cardio Indoor Cycling Workout", "Pln_nGVk7Js", "15:08", "GCN Training", "All levels"],
+        ["20 Min Cardio | Spin Bike Workout", "ndh2LxWvwTc", "20:05", "GCN Training", "All levels"],
+        ["HIIT Indoor Cycling Workout | 30 Minute Intervals", "ZiGE3-L4vyg", "30:00", "Global Cycling Network", "All levels"],
+        ["Full Body Cardio Workout | Not Running or Cycling", "b-vUNkH4RzQ", "23:05", "FightCamp", "All levels"]
+      ]},
+      { category: "Strength and resistance", tone: "red", videos: [
+        ["Home Workout For Beginners | Dumbbells Only", "2fCKd-BQOhw", "11:28", "THENX", "Beginner"],
+        ["Complete Chest and Shoulder Home Workout", "M55Oq0hd3FQ", "12:54", "Chris Heria", "All levels"],
+        ["Complete Biceps and Triceps Workout", "lBy-7EFK30o", "12:28", "THENX", "All levels"],
+        ["Complete Chest Workout | Push-ups and Dumbbells", "wvF3fk3RLo8", "13:41", "THENX", "All levels"],
+        ["Upper Body Workout With Dumbbells", "K9s8bRd4Fxw", "16:56", "The Body Coach TV", "All levels"],
+        ["15 Minute Dumbbell Hell", "eyFkF6PMhCk", "16:59", "The Body Coach TV", "Advanced"],
+        ["20 Minute Upper Body Dumbbell Drop Sets", "yPg4Fq16tJU", "20:05", "The Body Coach TV", "All levels"],
+        ["12 Minute Upper-Body and Core Workout", "m61-Q-NIML8", "13:26", "The Body Coach TV", "All levels"],
+        ["30 Minute Boxing and Weights Workout", "aYFxshPB2bM", "28:59", "FightCamp", "All levels"],
+        ["15 Min Compound Leg Workout with Dumbbells", "r78WzW27-UI", "20:06", "TIFF x DAN", "All levels"],
+        ["Dumbbell Strength Workout", "2cJXpPoGUbU", "21:22", "The Body Coach TV", "All levels"],
+        ["20 Minute Full Body Home Workout with Dumbbells", "-h2d2B0VdSw", "20:13", "The Body Coach TV", "All levels"],
+        ["30 Minute Energizing Dumbbell HIIT Workout", "zHJACKlf-Jc", "31:07", "The Body Coach TV", "All levels"],
+        ["35 Minute Home Dumbbell Workout", "z3KYIe5ptQw", "35:00", "The Body Coach TV", "All levels"],
+        ["25 Minute Full Body Home Dumbbell Workout", "JwzQnJTfTGw", "25:34", "The Body Coach TV", "All levels"],
+        ["20 Minute Intense Dumbbell Shoulder Blast", "ijD70_7vR4w", "21:01", "The Body Coach TV", "All levels"],
+        ["Full Body Workout With Weights", "S2iE_Cq1MtA", "20:30", "The Body Coach TV", "All levels"],
+        ["20 Minute Full Body Dumbbell Pyramid Workout", "s-pjBopj2wk", "20:00", "The Body Coach TV", "All levels"]
+      ]},
+      { category: "Legs, glutes and core", tone: "orange", videos: [
+        ["Savage 10 Minute Leg Burner", "5cAh3m5HCpw", "10:51", "The Body Coach TV", "Advanced"],
+        ["15 Minute Leg Burner", "Txindp8nosc", "16:55", "The Body Coach TV", "All levels"],
+        ["20 Minute Legs, Bums and Tums", "T5ApFjVOFfI", "21:15", "The Body Coach TV", "All levels"],
+        ["12 Minute Leg Burner", "vzNUH11jGLA", "12:31", "The Body Coach TV", "All levels"],
+        ["Legs and Glutes Dumbbell Workout", "JCU0VHEX5UU", "13:18", "The Body Coach TV", "All levels"],
+        ["20 Minute Legs, Bums and Tums Workout", "sjKfIvxdUp0", "21:20", "The Body Coach TV", "All levels"],
+        ["15 Minutes 15 Moves | Leg Burning Workout", "CqV5wI3NQOg", "16:24", "The Body Coach TV", "All levels"],
+        ["15 Minute Leg Burner", "d-bA4qHWnL0", "16:05", "The Body Coach TV", "All levels"],
+        ["Quick 10 Minute Legs, Bums and Tums Workout", "tPv-8HBr8K0", "11:08", "The Body Coach TV", "All levels"],
+        ["25 Minute Legs and Bum Workout", "YkwMW1tfeoc", "25:33", "The Body Coach TV", "All levels"],
+        ["20 Minute Legs and Glutes Dumbbell Workout", "0hJDUWHG02M", "20:02", "The Body Coach TV", "All levels"],
+        ["12 Minute Core and Abs Workout", "LF9L8anE1G8", "12:57", "The Body Coach TV", "All levels"],
+        ["10 Minute Abs and Core Workout", "jzUpDjTBn7s", "11:01", "The Body Coach TV", "All levels"],
+        ["Abs in 7 Minutes", "3sEeVJxKJpE", "7:28", "The Body Coach TV", "All levels"],
+        ["15 Minute Leg and Glute HIIT Home Workout", "gp8bX7Xw6Gk", "16:31", "The Body Coach TV", "All levels"],
+        ["Lower Body and Abs Dumbbell Workout", "LNxmfy4ZukA", "20:06", "The Body Coach TV", "All levels"]
+      ]},
+      { category: "Boxing and kickboxing", tone: "red", videos: [
+        ["25-Minute Rumble No-Equipment Cardio-Boxing Workout", "sgwtp9mF8tI", "25:39", "PS Fit", "All levels"],
+        ["10 Minute Boxing Workout | Resistance Band Training", "k_YS-L4J_8I", "12:41", "FightCamp", "All levels"],
+        ["Boxing Core Workout Inspired by Manny Pacquiao", "5-8IFt6vauc", "7:05", "FightCamp", "All levels"],
+        ["10 Minute Medicine Ball Workout | Boxing Training", "DrBwtGqCoco", "12:52", "FightCamp", "All levels"],
+        ["20-Minute Beginner Boxing Heavy Bag Workout", "CuCrHHvTZsE", "24:00", "FightCamp", "Beginner"],
+        ["4 Round Boxing Workout At-Home", "Cx6JfrRO4eA", "23:36", "FightCamp", "All levels"],
+        ["10 Minute Heavy Bag Workout | 720 Punches", "HgoQDCv0Aog", "11:59", "NateBowerFitness", "All levels"],
+        ["4 Round Punching Bag Workout for Beginners", "wIKrLzBAf84", "21:48", "FightCamp", "Beginner"],
+        ["Beginner Boxing Workout | Fat-Burning Routine", "Y5NtN0YYykc", "21:45", "FightCamp", "Beginner"],
+        ["Ultimate 20 Minute Heavy Bag Workout", "QnpmH5NP1kE", "21:36", "NateBowerFitness", "All levels"],
+        ["25 Minute Punching Bag Boxing Workout", "9aYD0npgWxk", "31:09", "FightCamp", "Beginner"],
+        ["Ultimate 4-Round Boxing Training", "saQV33RIC20", "23:42", "FightCamp", "All levels"],
+        ["20-Minute Boxing Bag Workout | Fat Burner", "kD7EfItFkZk", "23:02", "FightCamp", "All levels"],
+        ["20-Minute Boxing Heavy Bag HIIT Workout", "Gy5nGxkQ6kU", "24:02", "FightCamp", "All levels"],
+        ["25-Minute Follow-Along Heavy Bag Workout", "wDH2iJwK6Uw", "32:42", "FightCamp", "All levels"],
+        ["20 Minute Boxing Workout | Level Up Your Boxing", "Vqn8BpqwuLQ", "24:36", "FightCamp", "All levels"],
+        ["20 Minute Boxing Bag Workout | Punches and Footwork", "30vRnjTkq5U", "23:08", "FightCamp", "All levels"],
+        ["15 Minute Follow Along Boxing Workout", "yUp5450cEyo", "20:47", "FightCamp", "All levels"],
+        ["20 Min Advanced Punching Bag Workout", "XRR_Wrs-eTM", "21:58", "FightCamp", "Advanced"],
+        ["20 Minute Punching Bag Boxing Workout", "KuYpr5-M2BA", "21:19", "NateBowerFitness", "Advanced"],
+        ["20 Min Easy To Follow Boxing Workout", "Fe96nd6S6cQ", "22:16", "FightCamp", "All levels"],
+        ["30 Minute Cardio Boxing Bag Workout", "J_932kM4pwg", "31:10", "FightCamp", "All levels"],
+        ["Cardio Boxing | 15 Minute Bag Workout", "IVvOmoB88FM", "24:35", "FightCamp", "All levels"],
+        ["20 Min Cardio Boxing Class", "Biu8g_O__4c", "22:35", "FightCamp", "All levels"],
+        ["Quick Home Boxing Workout", "h1NtoP55D-Q", "21:53", "FightCamp", "All levels"],
+        ["15 Minute Holiday Boxing Burn", "a2q4SeQqTPU", "20:47", "FightCamp", "All levels"],
+        ["25 Minute Boxing Workout At Home", "ZOSiBkZNKsA", "31:10", "FightCamp", "All levels"],
+        ["10 Minute Heavy Bag Workout", "1vwN_r20bHU", "10:51", "FightCamp", "All levels"],
+        ["Boxing for Beginners | Punching Form", "ZjXPL8oB1Ys", "21:07", "FightCamp", "Beginner"],
+        ["20 Minute Cardio Kickboxing Workout", "MirQq7_W3jE", "21:08", "FightCamp", "All levels"]
+      ]},
+      { category: "General fitness", tone: "green", videos: [
+        ["Learn How To Kick Like Stephen Thompson", "NZ7B8zBrB_I", "20:48", "FightCamp", "All levels"],
+        ["25 Min Full Body Resistance Band Workout", "T5f6wu_7s_8", "25:29", "TIFF x DAN", "All levels"],
+        ["Resistance Band Activation Warmup", "Ha-YBfxoxeE", "2:49", "FightCamp", "All levels"],
+        ["20 Minute Bodyweight Strength and Conditioning Workout", "SSqUPfYB9iw", "20:25", "FightCamp", "All levels"],
+        ["Core Activation Warmup", "fJK76sR8-k0", "2:51", "FightCamp", "All levels"],
+        ["Upper Body Activation Warmup", "Bd4q1laz1r8", "2:51", "FightCamp", "All levels"],
+        ["Lower Body Activation Warmup", "mT0iAMMCpGA", "2:51", "FightCamp", "All levels"]
+      ]}
+    ];
+
+    // Pre-cache flattened array for performance optimization
+    const ALL_VIDEOS = DATA.flatMap(group => group.videos.map(video => ({
+      category: group.category,
+      tone: group.tone,
+      title: video[0],
+      id: video[1],
+      duration: video[2],
+      channel: video[3],
+      level: video[4]
+    })));
+
+    const state = {
+      category: "All",
+      query: "",
+      device: "iphone"
+    };
+
+    const categoryList = document.getElementById("categoryList");
+    const videoGrid = document.getElementById("videoGrid");
+    const emptyState = document.getElementById("emptyState");
+    const search = document.getElementById("videoSearch");
+    const modal = document.getElementById("youtubeModal");
+    const themeToggle = document.querySelector("[data-theme-toggle]");
+    const resetFilterBtn = document.getElementById("resetFilterBtn");
+
+    let lastFocusedElement = null;
+
+    // Global handlers for YouTube thumbnails
+    function removeDeadCard(img) {
+      img.removeAttribute('onerror');
+      img.removeAttribute('onload');
+      const card = img.closest('.video-card');
+      if (card) card.remove();
+    }
+
+    window.handleThumbError = function(img) {
+      if (img.src.includes('maxresdefault.jpg')) {
+        img.src = img.src.replace('maxresdefault.jpg', 'hqdefault.jpg');
+      } else {
+        removeDeadCard(img);
+      }
+    };
+
+    window.handleThumbLoad = function(img) {
+      if (img.naturalWidth === 120) {
+        removeDeadCard(img);
+      }
+    };
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      }[char]));
+    }
+
+    function renderCategories() {
+      const total = ALL_VIDEOS.length;
+      const groups = [{ category: "All", count: total }, ...DATA.map(group => ({
+        category: group.category,
+        count: group.videos.length
+      }))];
+
+      categoryList.innerHTML = groups.map(group => `
+        <button class="category-button ${group.category === state.category ? "is-active" : ""}" type="button" data-category="${escapeHtml(group.category)}">
+          <span>${escapeHtml(group.category)}</span>
+          <span>${group.count}</span>
+        </button>
+      `).join("");
+
+      document.getElementById("metricVideos").textContent = String(total);
+    }
+
+    function filteredVideos() {
+      const query = state.query.trim().toLowerCase();
+      return ALL_VIDEOS.filter(video => {
+        const inCategory = state.category === "All" || video.category === state.category;
+        const haystack = `${video.title} ${video.channel} ${video.level} ${video.category}`.toLowerCase();
+        return inCategory && (!query || haystack.includes(query));
+      });
+    }
+
+    function renderVideos() {
+      const videos = filteredVideos();
+      videoGrid.innerHTML = videos.map(video => `
+        <a class="video-card" href="https://youtu.be/${encodeURIComponent(video.id)}" target="_blank" rel="noopener noreferrer" data-tone="${escapeHtml(video.tone)}">
+          <span class="thumb">
+            <img src="https://i.ytimg.com/vi/${encodeURIComponent(video.id)}/maxresdefault.jpg" 
+                 onerror="handleThumbError(this)" 
+                 onload="handleThumbLoad(this)" 
+                 alt="${escapeHtml(video.title)} thumbnail" loading="lazy">
+            <span class="duration">${escapeHtml(video.duration)}</span>
+          </span>
+          <span class="video-body">
+            <span class="tag">${escapeHtml(video.category)}</span>
+            <strong class="video-title">${escapeHtml(video.title)}</strong>
+            <span class="video-meta"><span>${escapeHtml(video.channel)}</span><span>${escapeHtml(video.level)}</span></span>
+          </span>
+        </a>
+      `).join("");
+      
+      emptyState.classList.toggle("is-visible", videos.length === 0);
+    }
+
+    function setCategory(category) {
+      state.category = category;
+      renderCategories();
+      renderVideos();
+    }
+
+    function resetFilters() {
+      state.category = "All";
+      state.query = "";
+      search.value = "";
+      renderCategories();
+      renderVideos();
+    }
+
+    function setDevice(device) {
+      state.device = device;
+      document.body.dataset.device = device;
+      document.querySelectorAll("[data-device-target]").forEach(button => {
+        button.classList.toggle("is-active", button.dataset.deviceTarget === device);
+      });
+      document.querySelectorAll("[data-ios], [data-android], [data-mac]").forEach(link => {
+        const web = link.dataset.web || link.href;
+        const ios = link.dataset.ios;
+        const android = link.dataset.android;
+        const mac = link.dataset.mac;
+        let target = web;
+        if (device === "iphone" && ios) target = ios;
+        if (device === "android" && android) target = android;
+        if (device === "mac" && mac) target = mac;
+        link.href = target;
+      });
+    }
+
+    function setTheme(theme) {
+      const normalized = theme === "dark" ? "dark" : "light";
+      document.documentElement.dataset.theme = normalized;
+      document.querySelector('meta[name="theme-color"]').setAttribute("content", normalized === "dark" ? "#11110f" : "#f6f4ef");
+      if (themeToggle) {
+        themeToggle.textContent = normalized === "dark" ? "Light" : "Dark";
+        themeToggle.setAttribute("aria-pressed", String(normalized === "dark"));
+      }
+      try {
+        localStorage.setItem("myFitnessTheme", normalized);
+      } catch (error) {}
+    }
+
+    function openYoutubeModal() {
+      lastFocusedElement = document.activeElement;
+      modal.classList.add("is-open");
+      modal.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+      const firstAction = modal.querySelector("a, button");
+      if (firstAction) firstAction.focus();
+    }
+
+    function closeYoutubeModal() {
+      modal.classList.remove("is-open");
+      modal.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+      if (lastFocusedElement) {
+        lastFocusedElement.focus();
+      }
+    }
+
+    // Event Listeners
+    categoryList.addEventListener("click", event => {
+      const button = event.target.closest("[data-category]");
+      if (!button) return;
+      setCategory(button.dataset.category);
+    });
+
+    search.addEventListener("input", event => {
+      state.query = event.target.value;
+      renderVideos();
+    });
+
+    if (resetFilterBtn) {
+      resetFilterBtn.addEventListener("click", resetFilters);
+    }
+
+    document.querySelectorAll("[data-device-target]").forEach(button => {
+      button.addEventListener("click", () => setDevice(button.dataset.deviceTarget));
+    });
+
+    if (themeToggle) {
+      themeToggle.addEventListener("click", () => {
+        setTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark");
+      });
+    }
+
+    document.querySelectorAll("[data-open-youtube]").forEach(trigger => {
+      trigger.addEventListener("click", openYoutubeModal);
+    });
+
+    document.querySelectorAll("[data-close-youtube]").forEach(trigger => {
+      trigger.addEventListener("click", closeYoutubeModal);
+    });
+
+    document.querySelectorAll("[data-category-jump]").forEach(trigger => {
+      trigger.addEventListener("click", () => {
+        setCategory(trigger.dataset.categoryJump);
+        document.getElementById("library").scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
+
+    // Accessibility Modal Focus Trap & Escape handling
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape" && modal.classList.contains("is-open")) {
+        closeYoutubeModal();
+      }
+
+      if (event.key === "Tab" && modal.classList.contains("is-open")) {
+        const focusableElements = modal.querySelectorAll("a[href], button:not([disabled])");
+        if (focusableElements.length === 0) return;
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+
+        if (event.shiftKey && document.activeElement === firstElement) {
+          lastElement.focus();
+          event.preventDefault();
+        } else if (!event.shiftKey && document.activeElement === lastElement) {
+          firstElement.focus();
+          event.preventDefault();
+        }
+      }
+    });
+
+    // Initialize
+    renderCategories();
+    renderVideos();
+    try {
+      const currentTheme = document.documentElement.dataset.theme || "light";
+      setTheme(currentTheme);
+    } catch (error) {
+      setTheme("light");
+    }
+    setDevice(/Android/i.test(navigator.userAgent) ? "android" : /Mac/i.test(navigator.userAgent) ? "mac" : "iphone");
+  </script>
+</body>
+</html>
+```
+
+</details>
+
+## **2. Gemini 3.5 Flash (Old)**
 ### **User Prompt**
 > Refactor and improve this [`index.html`](https://github.com/pedromanuelamaral/my-fitness/blob/main/index.html).
 
@@ -73,9 +1829,2415 @@ Clarified that **visual design was preserved**, but **functional features were a
 
 > *Tone*: **Enthusiastic, tutorial-style**, with implementation details.
 
+<details>
+<summary><b>Code: Gemini 3.5 Flash (Old)</b></summary>
+
+```html
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f6f4ef">
+  <title>My Fitness</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  
+  <!-- Early theme/device initialization to prevent Flash of Incorrect State -->
+  <script>
+    try {
+      const savedTheme = localStorage.getItem("myFitnessTheme");
+      const theme = savedTheme === "dark" || savedTheme === "light" ? savedTheme : "light";
+      document.documentElement.dataset.theme = theme;
+    } catch (e) {}
+  </script>
+
+  <style>
+    :root {
+      color-scheme: light;
+      --canvas: #f6f4ef;
+      --paper: #fffefa;
+      --paper-strong: #ffffff;
+      --ink: #191814;
+      --muted: #514d45;
+      --subtle: #6c665c;
+      --line: rgba(25, 24, 20, 0.18);
+      --line-strong: rgba(25, 24, 20, 0.3);
+      --charcoal: #20201d;
+      --charcoal-hover: #35342e;
+      --charcoal-2: #2d2c27;
+      --accent: #b7ff3c;
+      --accent-dark: #4d650c;
+      --warm: #f2e2c4;
+      --blue: #dbeaf1;
+      --green: #dcebd7;
+      --red: #f5d6d3;
+      --orange: #f4d5ad;
+      --shadow: 0 28px 80px rgba(72, 63, 42, 0.12);
+      --radius: 8px;
+      --speed: 260ms;
+      --curve: cubic-bezier(0.32, 0.72, 0, 1);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --inverse-ink: var(--ink);
+    }
+
+    [data-theme="dark"] {
+      color-scheme: dark;
+      --canvas: #11110f;
+      --paper: #191916;
+      --paper-strong: #20201d;
+      --ink: #f4f0e7;
+      --muted: #b4ad9e;
+      --subtle: #857d70;
+      --line: rgba(244, 240, 231, 0.12);
+      --line-strong: rgba(244, 240, 231, 0.22);
+      --charcoal: #f4f0e7;
+      --charcoal-hover: #e0dcd3;
+      --charcoal-2: #d9d2c4;
+      --accent: #b7ff3c;
+      --accent-dark: #d0ff72;
+      --warm: #3a3020;
+      --blue: #1d3340;
+      --green: #223520;
+      --red: #412521;
+      --orange: #432d17;
+      --shadow: 0 28px 80px rgba(0, 0, 0, 0.36);
+      --inverse-ink: #11110f;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      background: var(--canvas);
+      color: var(--ink);
+      font-family: Outfit, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: geometricPrecision;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100dvh;
+      background: var(--canvas);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background:
+        linear-gradient(115deg, rgba(246, 244, 239, 0.9), rgba(246, 244, 239, 0.68)),
+        url("https://images.unsplash.com/photo-1517963879433-6ad2a04a8a2e?w=1800&q=78&auto=format&fit=crop") center / cover;
+    }
+
+    [data-theme="dark"] body::before {
+      background:
+        linear-gradient(115deg, rgba(17, 17, 15, 0.96), rgba(17, 17, 15, 0.82)),
+        url("https://images.unsplash.com/photo-1517963879433-6ad2a04a8a2e?w=1800&q=78&auto=format&fit=crop") center / cover;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      opacity: 0.26;
+      background-image:
+        linear-gradient(rgba(25, 24, 20, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(25, 24, 20, 0.035) 1px, transparent 1px);
+      background-size: 34px 34px;
+      mask-image: linear-gradient(to bottom, #000, transparent 86%);
+    }
+
+    [data-theme="dark"] body::after {
+      opacity: 0.22;
+      background-image:
+        linear-gradient(rgba(244, 240, 231, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(244, 240, 231, 0.045) 1px, transparent 1px);
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button, input, select { font: inherit; }
+    button { border: 0; cursor: pointer; }
+
+    /* Premium dynamic focus-visible accessibility ring */
+    *:focus-visible {
+      outline: 3px solid var(--accent-dark);
+      outline-offset: 3px;
+    }
+
+    .skip-link {
+      position: fixed;
+      left: 16px;
+      top: 16px;
+      z-index: 100;
+      transform: translateY(-140%);
+      background: var(--charcoal);
+      color: var(--paper);
+      padding: 10px 14px;
+      border-radius: var(--radius);
+      transition: transform var(--speed) var(--curve);
+    }
+
+    .skip-link:focus { transform: translateY(0); }
+
+    .shell {
+      width: min(1220px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 18px 0 calc(42px + var(--safe-bottom));
+    }
+
+    .topbar {
+      position: sticky;
+      top: 12px;
+      z-index: 40;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 48px;
+      padding: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.52);
+      border-radius: 999px;
+      background: rgba(255, 254, 250, 0.92);
+      box-shadow: 0 12px 40px rgba(73, 64, 45, 0.16);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    [data-theme="dark"] .topbar {
+      border-color: rgba(244, 240, 231, 0.1);
+      background: rgba(25, 25, 22, 0.76);
+      box-shadow: 0 12px 42px rgba(0, 0, 0, 0.26);
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 14px 7px 8px;
+      border-radius: 999px;
+      background: var(--charcoal);
+      color: var(--paper);
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    [data-theme="dark"] .brand {
+      background: #0f0f0d;
+      color: var(--ink);
+      border: 1px solid var(--line);
+    }
+
+    .brand-mark,
+    .icon-box {
+      display: inline-grid;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      background: var(--accent);
+      color: var(--ink);
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .nav {
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .nav a,
+    .device button {
+      border-radius: 999px;
+      color: var(--muted);
+      padding: 9px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      transition: background var(--speed) var(--curve), color var(--speed) var(--curve), transform var(--speed) var(--curve);
+      white-space: nowrap;
+    }
+
+    .theme-toggle {
+      min-height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 0 12px;
+      background: var(--paper-strong);
+      color: var(--ink);
+      font-weight: 800;
+      transition: background var(--speed) var(--curve), color var(--speed) var(--curve), transform var(--speed) var(--curve);
+    }
+
+    .theme-toggle:hover {
+      background: var(--accent);
+      color: var(--inverse-ink);
+    }
+
+    [data-theme="dark"] .theme-toggle {
+      background: rgba(244, 240, 231, 0.06);
+    }
+
+    .nav a:hover,
+    .device button:hover,
+    .device button.is-active {
+      background: rgba(25, 24, 20, 0.08);
+      color: var(--ink);
+    }
+
+    .nav a:active,
+    .device button:active,
+    .button:active,
+    .mode-card:active,
+    .video-card:active { transform: scale(0.985); }
+
+    .device {
+      display: flex;
+      gap: 2px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 3px;
+      background: rgba(255, 255, 255, 0.72);
+    }
+
+    [data-theme="dark"] .device {
+      background: rgba(244, 240, 231, 0.06);
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+      gap: clamp(28px, 5vw, 74px);
+      align-items: end;
+      min-height: 62dvh;
+      padding-bottom: 54px;
+    }
+
+    .eyebrow,
+    .section-kicker,
+    .tag,
+    .metric-label {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+      color: var(--accent-dark);
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 44px;
+      height: 2px;
+      background: var(--accent-dark);
+    }
+
+    h1 {
+      max-width: 820px;
+      margin: 0;
+      font-size: clamp(4.2rem, 12vw, 10.5rem);
+      line-height: 0.78;
+      letter-spacing: 0;
+      text-wrap: balance;
+    }
+
+    .hero-copy {
+      max-width: 650px;
+      margin: 26px 0 0;
+      color: var(--charcoal-2);
+      font-size: clamp(1.08rem, 1.7vw, 1.34rem);
+      line-height: 1.42;
+      text-wrap: pretty;
+    }
+
+    .hero-panel {
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.62);
+      background: rgba(255, 254, 250, 0.72);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 10px;
+    }
+
+    [data-theme="dark"] .hero-panel {
+      border-color: rgba(244, 240, 231, 0.1);
+      background: rgba(25, 25, 22, 0.72);
+    }
+
+    .hero-panel-inner {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--paper-strong);
+      overflow: hidden;
+    }
+
+    .hero-panel-head {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: center;
+      padding: 22px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .today {
+      margin: 0;
+      font-weight: 800;
+      font-size: 1.1rem;
+    }
+
+    .today-sub {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .status-dot {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 50% 50%, var(--accent) 0 34%, transparent 36%),
+        conic-gradient(from 0deg, var(--accent), #f4d5ad, #dbeaf1, var(--accent));
+      animation: breathe 2200ms var(--curve) infinite;
+    }
+
+    @keyframes breathe {
+      0%, 100% { transform: scale(0.94); opacity: 0.82; }
+      50% { transform: scale(1); opacity: 1; }
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .metric {
+      padding: 20px 18px;
+      border-right: 1px solid var(--line);
+    }
+
+    .metric:last-child { border-right: 0; }
+
+    .metric-value {
+      display: block;
+      margin-bottom: 6px;
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    .metric-label { color: var(--muted); font-size: 9px; }
+
+    .account-gate {
+      padding: 22px;
+      background: #1c1b18;
+      color: #fffefa;
+    }
+
+    [data-theme="dark"] .account-gate {
+      background: #151512;
+      color: var(--ink);
+    }
+
+    .account-gate p {
+      margin: 0 0 14px;
+      color: rgba(255, 254, 250, 0.76);
+      line-height: 1.5;
+    }
+
+    [data-theme="dark"] .account-gate p {
+      color: var(--muted);
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .hero-actions { margin-top: 26px; }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 42px;
+      border-radius: 7px;
+      padding: 0 14px;
+      background: var(--charcoal);
+      color: var(--paper);
+      font-weight: 800;
+      transition: transform var(--speed) var(--curve), background var(--speed) var(--curve), color var(--speed) var(--curve);
+    }
+
+    .button:hover { background: var(--charcoal-hover); }
+
+    .button.light { background: var(--paper); color: var(--ink); }
+    .button.light:hover { background: var(--accent); color: var(--inverse-ink); }
+
+    [data-theme="dark"] .button.light { background: #f4f0e7; color: #11110f; }
+    [data-theme="dark"] .button.light:hover { background: var(--accent); color: #11110f; }
+
+    .button.ghost { background: transparent; color: var(--muted); border: 1px solid var(--line); }
+    .button.ghost:hover { color: var(--ink); border-color: var(--line-strong); }
+
+    .account-gate .button.ghost,
+    .modal-inner .button.ghost {
+      color: rgba(255, 254, 250, 0.86);
+      border-color: rgba(255, 254, 250, 0.26);
+    }
+
+    .account-gate .button.ghost:hover,
+    .modal-inner .button.ghost:hover {
+      color: #fffefa;
+      border-color: rgba(255, 254, 250, 0.44);
+    }
+
+    [data-theme="dark"] .account-gate .button.ghost,
+    [data-theme="dark"] .modal-inner .button.ghost {
+      color: var(--ink);
+      border-color: var(--line);
+    }
+
+    [data-theme="dark"] .account-gate .button.ghost:hover,
+    [data-theme="dark"] .modal-inner .button.ghost:hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: var(--line-strong);
+    }
+
+    .button .arrow {
+      display: inline-grid;
+      place-items: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.16);
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 12px;
+    }
+
+    .button.light .arrow { background: rgba(25, 24, 20, 0.1); }
+    [data-theme="dark"] .button .arrow { background: rgba(17, 17, 15, 0.15); }
+    [data-theme="dark"] .button.light .arrow { background: rgba(17, 17, 15, 0.15); }
+
+    section {
+      padding: 76px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 0.72fr) minmax(280px, 0.28fr);
+      gap: 24px;
+      align-items: end;
+      margin-bottom: 26px;
+    }
+
+    .section-kicker {
+      display: block;
+      margin-bottom: 11px;
+      color: var(--accent-dark);
+    }
+
+    h2 {
+      margin: 0;
+      max-width: 720px;
+      font-size: clamp(2.1rem, 4vw, 4.8rem);
+      line-height: 0.9;
+      letter-spacing: 0;
+      text-wrap: balance;
+    }
+
+    .section-note {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+      text-wrap: pretty;
+    }
+
+    .mood-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.16fr) minmax(0, 0.84fr);
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .spotify-card {
+      min-width: 0;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: var(--paper-strong);
+      overflow: hidden;
+    }
+
+    .spotify-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .spotify-label strong { font-size: 1rem; }
+    .spotify-label span { color: var(--muted); font-size: 0.9rem; }
+
+    .spotify-card iframe {
+      display: block;
+      width: 100%;
+      height: 152px;
+      border: 0;
+    }
+
+    .mode-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr 1fr;
+      grid-auto-rows: minmax(178px, auto);
+      gap: 14px;
+    }
+
+    .mode-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-height: 178px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--paper-strong);
+      overflow: hidden;
+      transition: transform var(--speed) var(--curve), border-color var(--speed) var(--curve), background var(--speed) var(--curve);
+    }
+
+    .mode-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 7px;
+      background: var(--mode-color, var(--accent));
+      opacity: 0.9;
+    }
+
+    .mode-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--line-strong);
+      background: #fffdf5;
+    }
+
+    [data-theme="dark"] .mode-card:hover {
+      background: #242421;
+      border-color: var(--line-strong);
+    }
+
+    .mode-card.wide { grid-column: span 2; }
+    .mode-card[data-tone="nike"] { --mode-color: #f0a84c; }
+    .mode-card[data-tone="spotify"] { --mode-color: #8fc37d; }
+    .mode-card[data-tone="apple"] { --mode-color: #d98c85; }
+    .mode-card[data-tone="youtube"] { --mode-color: #c93b32; }
+    .mode-card[data-tone="wellness"] { --mode-color: #9cc7dc; }
+
+    .mode-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .mode-card h3 {
+      margin: auto 0 8px;
+      font-size: clamp(1.35rem, 2.1vw, 2.25rem);
+      line-height: 0.95;
+      letter-spacing: 0;
+    }
+
+    .mode-card p {
+      max-width: 36ch;
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.42;
+    }
+
+    .tag {
+      width: max-content;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 5px 7px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.55);
+      font-size: 9px;
+    }
+
+    [data-theme="dark"] .tag {
+      background: rgba(244, 240, 231, 0.06);
+      border-color: var(--line-strong);
+    }
+
+    .library-shell {
+      display: grid;
+      grid-template-columns: 290px minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .library-tools {
+      position: sticky;
+      top: 88px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255, 254, 250, 0.82);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      overflow: hidden;
+    }
+
+    [data-theme="dark"] .library-tools {
+      background: rgba(25, 25, 22, 0.82);
+    }
+
+    .search-wrap {
+      padding: 14px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .search-wrap label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .search-input-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper-strong);
+      color: var(--ink);
+      padding: 12px 34px 12px 12px;
+      outline: none;
+      transition: border-color var(--speed) var(--curve), box-shadow var(--speed) var(--curve);
+    }
+
+    [data-theme="dark"] .search {
+      background: #151512;
+    }
+
+    .search:focus {
+      border-color: var(--accent-dark);
+      box-shadow: 0 0 0 4px rgba(183, 255, 60, 0.32);
+    }
+
+    .search-clear {
+      position: absolute;
+      right: 10px;
+      background: transparent;
+      border: none;
+      color: var(--subtle);
+      font-size: 18px;
+      padding: 4px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .search-clear.is-visible {
+      display: flex;
+    }
+
+    .search-shortcut-hint {
+      position: absolute;
+      right: 10px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10px;
+      background: var(--canvas);
+      border: 1px solid var(--line);
+      padding: 2px 5px;
+      border-radius: 4px;
+      color: var(--subtle);
+      pointer-events: none;
+      transition: opacity var(--speed);
+    }
+
+    .search-input-container:focus-within .search-shortcut-hint {
+      opacity: 0;
+    }
+
+    /* Modern Difficulty Segmented Controls */
+    .difficulty-filter-wrap {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .difficulty-label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .difficulty-segments {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+      background: var(--canvas);
+      padding: 3px;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+    }
+
+    [data-theme="dark"] .difficulty-segments {
+      background: #121210;
+    }
+
+    .diff-btn {
+      background: transparent;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      padding: 6px;
+      border-radius: 4px;
+      text-align: center;
+      transition: background var(--speed), color var(--speed);
+    }
+
+    .diff-btn.is-active {
+      background: var(--paper-strong);
+      color: var(--ink);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    [data-theme="dark"] .diff-btn.is-active {
+      background: var(--charcoal-hover);
+    }
+
+    .category-list {
+      display: grid;
+      gap: 0;
+      padding: 8px;
+    }
+
+    .category-button {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      width: 100%;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--muted);
+      padding: 11px 10px;
+      text-align: left;
+      transition: background var(--speed) var(--curve), color var(--speed) var(--curve);
+    }
+
+    .category-button:hover,
+    .category-button.is-active {
+      background: var(--charcoal);
+      color: var(--paper);
+    }
+
+    .category-button span:first-child {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-weight: 800;
+    }
+
+    .category-button span:last-child {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 0.78rem;
+    }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .video-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-height: 184px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255, 254, 250, 0.9);
+      overflow: hidden;
+      transition: transform var(--speed) var(--curve), border-color var(--speed) var(--curve), background var(--speed) var(--curve);
+    }
+
+    [data-theme="dark"] .video-card {
+      background: rgba(32, 32, 29, 0.9);
+    }
+
+    .video-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--line-strong);
+      background: var(--paper-strong);
+    }
+
+    [data-theme="dark"] .video-card:hover {
+      background: #242421;
+      border-color: var(--line-strong);
+    }
+
+    .thumb {
+      position: relative;
+      display: block;
+      aspect-ratio: 16 / 9;
+      background: #d9d3c6;
+      overflow: hidden;
+    }
+
+    [data-theme="dark"] .thumb {
+      background: #262623;
+    }
+
+    .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: saturate(0.9) contrast(1.02);
+      transition: transform 520ms var(--curve);
+    }
+
+    .video-card:hover .thumb img { transform: scale(1.045); }
+
+    .duration {
+      position: absolute;
+      right: 8px;
+      bottom: 8px;
+      border-radius: 4px;
+      padding: 3px 6px;
+      background: rgba(25, 24, 20, 0.86);
+      color: var(--paper);
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    /* Favorites Bookmark Trigger */
+    .favorite-toggle {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      z-index: 10;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(25, 24, 20, 0.8);
+      color: #fffefa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      transition: transform var(--speed) var(--curve), background-color var(--speed);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .favorite-toggle:hover {
+      transform: scale(1.1);
+      background: rgba(25, 24, 20, 0.95);
+    }
+
+    .favorite-toggle.is-starred {
+      color: #ffca28;
+    }
+
+    .video-body {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      padding: 14px;
+    }
+
+    .video-title {
+      margin: 0 0 12px;
+      color: var(--ink);
+      font-size: 1rem;
+      line-height: 1.18;
+      font-weight: 800;
+      text-wrap: pretty;
+    }
+
+    .video-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: auto;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .video-meta span {
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .empty-state {
+      display: none;
+      border: 1px dashed var(--line-strong);
+      border-radius: 14px;
+      padding: 28px;
+      background: rgba(255, 254, 250, 0.72);
+    }
+
+    [data-theme="dark"] .empty-state { background: rgba(25, 24, 22, 0.5); }
+
+    .empty-state.is-visible { display: block; }
+    .empty-state h3 { margin: 0 0 8px; font-size: 1.4rem; }
+    .empty-state p { margin: 0; color: var(--muted); }
+
+    .wellness-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 0.52fr);
+      gap: 14px;
+    }
+
+    .recovery-card {
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: var(--paper-strong);
+      padding: 26px;
+    }
+
+    .recovery-card h3 {
+      margin: 0 0 12px;
+      font-size: clamp(1.6rem, 2.4vw, 2.8rem);
+      line-height: 0.96;
+    }
+
+    .recovery-card p {
+      margin: 0 0 18px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .compact-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .compact-link {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: #fbfaf6;
+      font-weight: 800;
+      transition: background var(--speed) var(--curve), transform var(--speed) var(--curve);
+    }
+
+    [data-theme="dark"] .compact-link {
+      background: #181815;
+    }
+
+    .compact-link:hover { background: var(--green); transform: translateY(-1px); }
+    .compact-link span:last-child { color: var(--muted); font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.8rem; }
+
+    footer {
+      padding-top: 28px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      display: none;
+      align-items: end;
+      justify-content: center;
+      padding: 18px;
+    }
+
+    .modal.is-open { display: flex; }
+
+    .modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(25, 24, 20, 0.64);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .modal-card {
+      position: relative;
+      width: min(520px, 100%);
+      border-radius: 18px;
+      background: #1c1b18;
+      color: #fffefa;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      padding: 10px;
+      box-shadow: 0 30px 100px rgba(0, 0, 0, 0.36);
+      transform: translateY(12px);
+      animation: modal-in 320ms var(--curve) forwards;
+    }
+
+    [data-theme="dark"] .modal-card {
+      background: #181816;
+      color: var(--ink);
+      border-color: var(--line-strong);
+    }
+
+    @keyframes modal-in {
+      to { transform: translateY(0); }
+    }
+
+    .modal-inner {
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      padding: 22px;
+    }
+
+    [data-theme="dark"] .modal-inner { border-color: var(--line); }
+
+    .modal-inner h3 {
+      margin: 0 0 10px;
+      font-size: 2rem;
+      line-height: 0.96;
+    }
+
+    .modal-inner p {
+      margin: 0 0 18px;
+      color: rgba(255, 254, 250, 0.72);
+      line-height: 1.55;
+    }
+
+    [data-theme="dark"] .modal-inner p { color: var(--muted); }
+
+    .playlist-stack {
+      display: grid;
+      gap: 8px;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    [data-theme="dark"] .playlist-stack { border-top-color: var(--line); }
+
+    .playlist-stack .button {
+      justify-content: space-between;
+      background: rgba(255, 255, 255, 0.08);
+      color: #fffefa;
+    }
+
+    .playlist-stack .button:hover { background: rgba(255, 255, 255, 0.14); }
+
+    [data-theme="dark"] .playlist-stack .button {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--ink);
+    }
+
+    [data-theme="dark"] .playlist-stack .button:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+    
+    [data-theme="dark"] .playlist-stack .button .arrow {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Premium Sticky Workout Timer Drawer Widget */
+    .timer-widget {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 50;
+      width: 290px;
+      border-radius: 16px;
+      background: rgba(255, 254, 250, 0.95);
+      border: 1px solid var(--line);
+      box-shadow: 0 16px 44px rgba(73, 64, 45, 0.18);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      overflow: hidden;
+      transform: translateY(0);
+      transition: transform 400ms var(--curve), opacity var(--speed);
+    }
+
+    [data-theme="dark"] .timer-widget {
+      background: rgba(25, 25, 22, 0.94);
+      border-color: var(--line-strong);
+      box-shadow: 0 16px 44px rgba(0, 0, 0, 0.4);
+    }
+
+    .timer-widget.is-collapsed {
+      transform: translateY(calc(100% - 46px));
+    }
+
+    .timer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: var(--charcoal);
+      color: var(--paper);
+      cursor: pointer;
+    }
+
+    [data-theme="dark"] .timer-head {
+      background: #0f0f0d;
+      color: var(--ink);
+    }
+
+    .timer-head-title {
+      font-weight: 800;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-family: "JetBrains Mono", monospace;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .timer-toggle-indicator {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 14px;
+      transition: transform var(--speed);
+    }
+
+    .timer-widget.is-collapsed .timer-toggle-indicator {
+      transform: rotate(180deg);
+    }
+
+    .timer-body {
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .timer-display-block {
+      text-align: center;
+      background: var(--canvas);
+      padding: 14px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+    }
+
+    [data-theme="dark"] .timer-display-block {
+      background: #121210;
+    }
+
+    .timer-phase {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--accent-dark);
+      margin-bottom: 2px;
+    }
+
+    .timer-time {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 40px;
+      font-weight: 700;
+      line-height: 1;
+      margin: 4px 0;
+    }
+
+    .timer-round-info {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .timer-config-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+
+    .timer-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .timer-field label {
+      font-size: 8px;
+      font-family: "JetBrains Mono", monospace;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .timer-field input {
+      width: 100%;
+      text-align: center;
+      background: var(--paper-strong);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 4px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 12px;
+      color: var(--ink);
+    }
+
+    .timer-controls {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 6px;
+    }
+
+    .timer-btn {
+      padding: 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 800;
+      text-align: center;
+      text-transform: uppercase;
+      font-family: "JetBrains Mono", monospace;
+    }
+
+    .timer-btn-primary {
+      background: var(--accent);
+      color: var(--inverse-ink);
+    }
+
+    .timer-btn-primary:hover {
+      background: var(--accent-dark);
+      color: #ffffff;
+    }
+
+    .timer-btn-secondary {
+      background: var(--canvas);
+      color: var(--muted);
+      border: 1px solid var(--line);
+    }
+
+    .timer-btn-secondary:hover {
+      background: rgba(25, 24, 20, 0.08);
+      color: var(--ink);
+    }
+
+    [data-device="watch"] .hero { min-height: auto; padding-bottom: 24px; }
+    [data-device="watch"] h1 { font-size: clamp(3.2rem, 16vw, 5.4rem); }
+    [data-device="watch"] .mood-grid,
+    [data-device="watch"] .mode-grid,
+    [data-device="watch"] .library-shell,
+    [data-device="watch"] .wellness-grid { grid-template-columns: 1fr; }
+    [data-device="watch"] .mode-card.wide { grid-column: auto; }
+    [data-device="watch"] .video-grid { grid-template-columns: 1fr; }
+    [data-device="watch"] .spotify-card iframe { height: 92px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 1ms !important;
+        scroll-behavior: auto !important;
+        transition-duration: 1ms !important;
+      }
+    }
+
+    @media (max-width: 1020px) {
+      .hero,
+      .section-head,
+      .mood-grid,
+      .library-shell,
+      .wellness-grid { grid-template-columns: 1fr; }
+      .library-tools { position: static; }
+      .mode-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .mode-card.wide { grid-column: span 2; }
+      .video-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .timer-widget {
+        bottom: 12px;
+        right: 12px;
+        width: calc(100% - 24px);
+        max-width: 320px;
+      }
+    }
+
+    @media (max-width: 740px) {
+      .shell { width: min(100% - 24px, 1220px); padding-top: 12px; }
+      .topbar {
+        position: relative;
+        top: 0;
+        grid-template-columns: 1fr;
+        align-items: stretch;
+        border-radius: 14px;
+        margin-bottom: 22px;
+        padding: 8px;
+        gap: 8px;
+      }
+      .brand {
+        width: 100%;
+        justify-content: flex-start;
+        border-radius: 10px;
+        justify-self: stretch;
+      }
+      .top-actions {
+        position: static;
+        grid-column: 1 / -1;
+        align-items: center;
+        justify-content: flex-end;
+      }
+      .theme-toggle {
+        min-height: 40px;
+        border-radius: 8px;
+        padding: 0 11px;
+        background: var(--accent);
+        color: var(--ink);
+        border-color: rgba(25, 24, 20, 0.25);
+      }
+      [data-theme="dark"] .theme-toggle { background: rgba(244, 240, 231, 0.1); }
+      .device { display: none; }
+      .nav {
+        grid-column: 1 / -1;
+        overflow-x: auto;
+        justify-content: flex-start;
+        gap: 6px;
+        padding: 4px 0 0;
+      }
+      .nav a {
+        background: rgba(25, 24, 20, 0.06);
+        padding: 9px 11px;
+      }
+      [data-theme="dark"] .nav a { background: rgba(244, 240, 231, 0.08); }
+      .hero {
+        gap: 22px;
+        min-height: auto;
+        padding: 24px 0 34px;
+      }
+      .eyebrow { margin-bottom: 12px; font-size: 9px; }
+      .eyebrow::before { width: 42px; }
+      h1 {
+        max-width: 8ch;
+        font-size: clamp(3.35rem, 17vw, 4.35rem);
+        line-height: 0.84;
+        overflow-wrap: normal;
+      }
+      .hero-copy {
+        max-width: 100%;
+        margin-top: 18px;
+        font-size: 1.02rem;
+        line-height: 1.42;
+      }
+      .button-row { gap: 8px; }
+      .button {
+        min-height: 42px;
+        padding: 0 12px;
+        font-size: 0.94rem;
+      }
+      section { padding: 48px 0; }
+      .section-head { gap: 12px; margin-bottom: 18px; }
+      h2 {
+        font-size: clamp(2.35rem, 12vw, 3.3rem);
+        line-height: 0.92;
+      }
+      .section-note { font-size: 0.98rem; }
+      .hero-panel-head,
+      .account-gate,
+      .recovery-card { padding: 18px; }
+      .hero-panel { border-radius: 16px; }
+      .metric-grid { grid-template-columns: 1fr; }
+      .metric { border-right: 0; border-bottom: 1px solid var(--line); }
+      .metric:last-child { border-bottom: 0; }
+      .metric { padding: 15px 18px; }
+      .spotify-label {
+        display: grid;
+        gap: 4px;
+      }
+      .spotify-card iframe { height: 112px; }
+      .mode-card { min-height: 158px; padding: 18px; }
+      .mode-grid,
+      .video-grid { grid-template-columns: 1fr; }
+      .mode-card.wide { grid-column: auto; }
+      .library-shell { gap: 12px; }
+      .category-list {
+        display: flex;
+        gap: 6px;
+        overflow-x: auto;
+        padding: 8px;
+      }
+      .category-button {
+        grid-template-columns: auto auto;
+        flex: 0 0 auto;
+        width: auto;
+      }
+    }
+  </style>
+</head>
+<body data-device="iphone">
+  <a class="skip-link" href="#library">Skip to library</a>
+  
+  <div class="shell">
+    <header class="topbar" aria-label="Primary">
+      <a class="brand" href="#top" aria-label="My Fitness home"><span class="brand-mark" aria-hidden="true">MF</span><span>My Fitness</span></a>
+      <nav class="nav" aria-label="Sections">
+        <a href="#mood">Mood</a>
+        <a href="#modes">Modes</a>
+        <a href="#library">Library</a>
+        <a href="#wellness">Wellness</a>
+      </nav>
+      <div class="top-actions">
+        <button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false">Dark</button>
+        <div class="device" aria-label="Device preview">
+          <button class="is-active" type="button" data-device-target="iphone">iPhone</button>
+          <button type="button" data-device-target="android">Android</button>
+          <button type="button" data-device-target="mac">Mac</button>
+          <button type="button" data-device-target="watch">Watch</button>
+        </div>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="page-title">
+        <div>
+          <span class="eyebrow">Private movement hub</span>
+          <h1 id="page-title">My Fitness</h1>
+          <p class="hero-copy">Pick a mode, set the audio environment, and open training without losing the thread. YouTube routes through an account check first because mixing accounts is exactly the kind of preventable mess this page should stop.</p>
+          <div class="button-row hero-actions">
+            <a class="button" href="#modes">Choose training <span class="arrow" aria-hidden="true">→</span></a>
+            <button class="button ghost" type="button" data-open-youtube>Open YouTube gate</button>
+          </div>
+        </div>
+
+        <aside class="hero-panel" aria-label="Dashboard summary">
+          <div class="hero-panel-inner">
+            <div class="hero-panel-head">
+              <div>
+                <p class="today">Today: choose the lowest-friction session.</p>
+                <p class="today-sub">Music first, workout second, recovery always visible.</p>
+              </div>
+              <span class="status-dot" aria-hidden="true"></span>
+            </div>
+            <div class="metric-grid" aria-label="Library metrics">
+              <div class="metric"><span class="metric-value" id="metricVideos">0</span><span class="metric-label">Videos loaded</span></div>
+              <div class="metric"><span class="metric-value" id="metricFavorites">0</span><span class="metric-label">Favorites</span></div>
+              <div class="metric"><span class="metric-value">5</span><span class="metric-label">Training modes</span></div>
+            </div>
+            <div class="account-gate">
+              <p><strong>YouTube account gate.</strong> Before any playlist opens, switch into the managed Fitness account. This page does not pretend it can control Google account state from HTML.</p>
+              <div class="button-row">
+                <a class="button light" href="https://accounts.google.com/ServiceLogin?service=youtube" target="_blank" rel="noopener noreferrer">Switch account <span class="arrow" aria-hidden="true">→</span></a>
+                <button class="button ghost" type="button" data-open-youtube>Playlists</button>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <section id="mood" aria-labelledby="mood-title">
+        <div class="section-head">
+          <div>
+            <span class="section-kicker">Set the mood</span>
+            <h2 id="mood-title">Two audio lanes, no hunting.</h2>
+          </div>
+          <p class="section-note">Keep the players at the top, but frame them as the start of the session instead of random embeds sitting above a link dump.</p>
+        </div>
+        <div class="mood-grid">
+          <article class="spotify-card">
+            <div class="spotify-label"><strong>Focus</strong><span>steady work, warm-up, recovery</span></div>
+            <iframe title="Spotify focus playlist" src="https://open.spotify.com/embed/playlist/37i9dQZF1EIhIOnAU06Sx0?utm_source=generator&theme=0" loading="lazy" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+          </article>
+          <article class="spotify-card">
+            <div class="spotify-label"><strong>Energy</strong><span>harder sessions</span></div>
+            <iframe title="Spotify energy playlist" src="https://open.spotify.com/embed/playlist/37i9dQZF1EpzHyLXxaZMNE?utm_source=generator&theme=0" loading="lazy" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+          </article>
+        </div>
+      </section>
+
+      <section id="modes" aria-labelledby="modes-title">
+        <div class="section-head">
+          <div>
+            <span class="section-kicker">Choose your training mode</span>
+            <h2 id="modes-title">Five routes, each with a job.</h2>
+          </div>
+          <p class="section-note">The buttons are real tap targets. Native-app deep links are kept for iPhone, Android and Mac, with browser fallbacks when the app link cannot open.</p>
+        </div>
+        <div class="mode-grid">
+          <a class="mode-card wide" data-tone="nike" href="https://niketrainingclub.sng.link/Ara19/24fe/6itr" data-web="https://niketrainingclub.sng.link/Ara19/24fe/6itr" data-ios="niketraining://" data-android="intent://niketraining#Intent;scheme=niketraining;package=com.nike.ntc;end">
+            <div class="mode-top"><span class="icon-box">NT</span><span class="tag">Guided</span></div>
+            <h3>Nike Training Club</h3>
+            <p>Use this when you want a planned session with minimal setup and no equipment spiral.</p>
+          </a>
+          <a class="mode-card" data-tone="spotify" href="https://open.spotify.com/genre/0JQ5DAqbMKFJ6dHNHTv6Mx" data-web="https://open.spotify.com/genre/0JQ5DAqbMKFJ6dHNHTv6Mx" data-ios="spotify:genre:0JQ5DAqbMKFJ6dHNHTv6Mx" data-android="intent://open.spotify.com/genre/0JQ5DAqbMKFJ6dHNHTv6Mx#Intent;scheme=https;package=com.spotify.music;end">
+            <div class="mode-top"><span class="icon-box">SP</span><span class="tag">Audio</span></div>
+            <h3>Spotify Fitness</h3>
+            <p>Use music as the driver and let the session follow the pace.</p>
+          </a>
+          <a class="mode-card" data-tone="apple" href="https://fitness.apple.com" data-web="https://fitness.apple.com" data-ios="fitness://" data-mac="fitness://">
+            <div class="mode-top"><span class="icon-box">AF</span><span class="tag">Apple</span></div>
+            <h3>Apple Fitness+</h3>
+            <p>Yoga, core, cooldown and Apple Health logging.</p>
+          </a>
+          <button class="mode-card" data-tone="youtube" type="button" data-open-youtube>
+            <div class="mode-top"><span class="icon-box">YT</span><span class="tag">Gate</span></div>
+            <h3>YouTube Training</h3>
+            <p>Always starts with the account reminder before opening playlists or curated videos.</p>
+          </button>
+          <a class="mode-card wide" data-tone="wellness" href="#wellness">
+            <div class="mode-top"><span class="icon-box">WR</span><span class="tag">Recovery</span></div>
+            <h3>Wellness and recovery</h3>
+            <p>Meditation, stretching and lower-intensity routes stay visible so recovery does not become an afterthought.</p>
+          </a>
+        </div>
+      </section>
+
+      <section id="library" aria-labelledby="library-title">
+        <div class="section-head">
+          <div>
+            <span class="section-kicker">Curated video library</span>
+            <h2 id="library-title">Searchable, grouped, not a thumbnail landfill.</h2>
+          </div>
+          <p class="section-note">The original empty tabs are gone. Counts now come from the data that is actually rendered, and every video opens in a new tab with the account gate still available above.</p>
+        </div>
+        <div class="library-shell">
+          <aside class="library-tools" aria-label="Video filters">
+            <div class="search-wrap">
+              <label for="videoSearch">Search videos</label>
+              <div class="search-input-container">
+                <input class="search" id="videoSearch" type="search" placeholder="boxing, core, calm, dumbbell" autocomplete="off">
+                <button class="search-clear" id="searchClear" type="button" aria-label="Clear search" title="Clear search">×</button>
+                <kbd class="search-shortcut-hint">/</kbd>
+              </div>
+            </div>
+            
+            <div class="difficulty-filter-wrap">
+              <span class="difficulty-label">Difficulty</span>
+              <div class="difficulty-segments" id="difficultyFilter">
+                <button class="diff-btn is-active" type="button" data-diff="All">All</button>
+                <button class="diff-btn" type="button" data-diff="Beginner">Beginner</button>
+                <button class="diff-btn" type="button" data-diff="Advanced">Advanced</button>
+              </div>
+            </div>
+
+            <div class="category-list" id="categoryList"></div>
+          </aside>
+          <div>
+            <div class="video-grid" id="videoGrid"></div>
+            <div class="empty-state" id="emptyState">
+              <h3>No videos match that filter.</h3>
+              <p>Try a broader term, change categories, or check your difficulty filter. Empty UI is a bug when it gives no way back.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="wellness" aria-labelledby="wellness-title">
+        <div class="section-head">
+          <div>
+            <span class="section-kicker">Wellness and recovery</span>
+            <h2 id="wellness-title">Recovery is part of the system.</h2>
+          </div>
+          <p class="section-note">This section keeps meditation and Apple Fitness close instead of hiding recovery under the same visual weight as hard training.</p>
+        </div>
+        <div class="wellness-grid">
+          <article class="recovery-card">
+            <h3>Open Apple Fitness+ for yoga, core or cooldown.</h3>
+            <p>Use Fitness+ when you want the session logged cleanly and you do not want YouTube recommendations shaping the next hour.</p>
+            <div class="button-row">
+              <a class="button" href="https://fitness.apple.com" data-web="https://fitness.apple.com" data-ios="fitness://" data-mac="fitness://">Open Fitness+ <span class="arrow" aria-hidden="true">→</span></a>
+              <button class="button ghost" type="button" data-category-jump="Meditation and mindfulness">Meditations</button>
+            </div>
+          </article>
+          <article class="recovery-card">
+            <h3>Quick reset queue.</h3>
+            <p>Short sessions that are useful when the full training library is the wrong tool.</p>
+            <div class="compact-list">
+              <a class="compact-link" href="https://youtu.be/ENYYb5vIMkU" target="_blank" rel="noopener noreferrer"><span>10-minute morning meditation</span><span>10:18</span></a>
+              <a class="compact-link" href="https://youtu.be/aEqlQvczMJQ" target="_blank" rel="noopener noreferrer"><span>10-minute sleep meditation</span><span>10:02</span></a>
+              <a class="compact-link" href="https://youtu.be/zUu0zs9WeSg" target="_blank" rel="noopener noreferrer"><span>Foam rolling recovery</span><span>7:14</span></a>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      My Fitness. Self-contained HTML dashboard. No build step, no accounts stored, no fake login control.
+    </footer>
+  </div>
+
+  <!-- Interval Timer Widget Drawer -->
+  <aside class="timer-widget is-collapsed" id="timerWidget" aria-label="Workout Timer">
+    <div class="timer-head" id="timerHeader" role="button" aria-expanded="false" aria-controls="timerBody" tabindex="0">
+      <span class="timer-head-title">⏱️ Interval Timer</span>
+      <span class="timer-toggle-indicator" aria-hidden="true">▲</span>
+    </div>
+    <div class="timer-body" id="timerBody">
+      <div class="timer-display-block">
+        <div class="timer-phase" id="timerPhase">READY</div>
+        <div class="timer-time" id="timerTime">00:40</div>
+        <div class="timer-round-info" id="timerRoundInfo">Round 1 of 8</div>
+      </div>
+      
+      <div class="timer-config-grid">
+        <div class="timer-field">
+          <label for="timerWork">Work (s)</label>
+          <input type="number" id="timerWork" value="40" min="5" max="300">
+        </div>
+        <div class="timer-field">
+          <label for="timerRest">Rest (s)</label>
+          <input type="number" id="timerRest" value="20" min="0" max="300">
+        </div>
+        <div class="timer-field">
+          <label for="timerRounds">Rounds</label>
+          <input type="number" id="timerRounds" value="8" min="1" max="99">
+        </div>
+      </div>
+
+      <div class="timer-controls">
+        <button class="timer-btn timer-btn-primary" id="timerStartBtn" type="button">Start</button>
+        <button class="timer-btn timer-btn-secondary" id="timerResetBtn" type="button">Reset</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- YouTube Modal -->
+  <div class="modal" id="youtubeModal" role="dialog" aria-modal="true" aria-labelledby="youtubeModalTitle" aria-hidden="true">
+    <div class="modal-backdrop" data-close-youtube></div>
+    <div class="modal-card">
+      <div class="modal-inner">
+        <h3 id="youtubeModalTitle">Switch YouTube account first.</h3>
+        <p>You have multiple accounts. Open the account switcher, confirm the managed Fitness account, then choose a playlist. This gate is intentionally before the playlist links.</p>
+        <div class="button-row">
+          <a class="button light" href="https://accounts.google.com/ServiceLogin?service=youtube" target="_blank" rel="noopener noreferrer">Switch account <span class="arrow" aria-hidden="true">→</span></a>
+          <button class="button ghost" type="button" data-close-youtube id="modalCloseFocus">Cancel</button>
+        </div>
+        <div class="playlist-stack">
+          <a class="button" href="https://youtube.com/playlist?list=PLK9S9qvcANFv5Uo3sM9m-k65P2jgBDxc3" target="_blank" rel="noopener noreferrer">Boxing workouts <span class="arrow" aria-hidden="true">→</span></a>
+          <a class="button" href="https://youtube.com/playlist?list=PLyCLoPd4VxBt9owIB5bTCrViAMIkCVGCb" target="_blank" rel="noopener noreferrer">Leg workouts <span class="arrow" aria-hidden="true">→</span></a>
+          <a class="button" href="https://youtube.com/playlist?list=PLxx3JZXtxiY7Av35ak7Coroz0RQRl6A6I" target="_blank" rel="noopener noreferrer">Full curated library <span class="arrow" aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const DATA = [
+      { category: "Beginner and bodyweight", tone: "green", videos: [
+        ["12 Minute At-Home Workout | No Equipment Needed", "IIuWOk1jbcE", "14:17", "FightCamp", "All levels"],
+        ["Basic Footwork Drills For Beginners | Follow Along", "N_HstpxHnTA", "23:28", "FightCamp", "Beginner"],
+        ["Workout 1 | 15 Minute Ultimate Beginner Home Workout", "CUjV6LCAlvs", "18:48", "The Body Coach TV", "Beginner"],
+        ["Workout 2 | 15 Minute Ultimate Beginner Home Workout", "Yqntd4rmUZQ", "18:32", "The Body Coach TV", "Beginner"],
+        ["Workout 3 | 15 Minute Ultimate Beginner Home Workout", "nGHEhnPh5lA", "18:28", "The Body Coach TV", "Beginner"],
+        ["Workout 4 | 15 Minute Ultimate Beginner Home Workout", "KNhBdh7rAzQ", "18:34", "The Body Coach TV", "Beginner"]
+      ]},
+      { category: "Yoga", tone: "blue", videos: [
+        ["20 Minute Beginners Yoga | Yoga with Lucy", "iUKd8bbgCqw", "23:36", "The Body Coach TV", "Beginner"],
+        ["The Basics of Yoga | Yoga for Beginners", "BRmlJ4HWlxo", "15:34", "The Body Coach TV", "Beginner"],
+        ["Hip Opening Flow | Yoga for Beginners", "1Bq56-x3poE", "16:43", "The Body Coach TV", "Beginner"],
+        ["Hamstring Stretch Flow | Yoga for Beginners", "tVmKjvV-tY0", "14:51", "The Body Coach TV", "Beginner"],
+        ["Mind and Body Flow | Yoga for Beginners", "7ltphXHUIH8", "15:04", "The Body Coach TV", "Beginner"],
+        ["Twist-Focused Flow | Yoga for Beginners", "zYuqGDIx4Lk", "14:44", "The Body Coach TV", "Beginner"],
+        ["Heart Opening Flow | Yoga for Beginners", "IetE0mwtVNg", "15:23", "The Body Coach TV", "Beginner"],
+        ["Creative Flow | Yoga for Beginners", "ZtbJJ3kqWLw", "14:45", "The Body Coach TV", "Beginner"]
+      ]},
+      { category: "Flexibility and mobility", tone: "blue", videos: [
+        ["Foam Rolling For Recovery | Follow Along Routine", "zUu0zs9WeSg", "7:14", "FightCamp", "All levels"],
+        ["Flexibility and Mobility Workout", "nFo5dOhlYUw", "20:55", "TheLeanMachines", "All levels"],
+        ["Beginners Stretching and Flexibility Routine", "21xCQ4VtEL0", "16:18", "TheLeanMachines", "Beginner"],
+        ["Flexibility and Mobility Routine | Upper Body", "pLnI4b3QSgM", "15:13", "TheLeanMachines", "All levels"],
+        ["24 Minute Total Body Foam Rolling Routine", "mpr9IVfrpgg", "25:31", "FightCamp", "All levels"],
+        ["10 Minute Mobility Core Workout", "JTW2NW0WPKM", "12:06", "FightCamp", "All levels"],
+        ["Flexibility and Kicking Full-Length Workout", "4Vjgt4cPtls", "24:34", "FightCamp", "All levels"],
+        ["How to increase flexibility and mobility", "-shl9EgjQdI", "13:16", "TheLeanMachines", "All levels"],
+        ["Flexibility and Mobility For Weightlifting", "nsAmvXgz-Os", "22:42", "TheLeanMachines", "All levels"],
+        ["How To Fix Your Bad Posture", "rNXBDOafJm8", "9:09", "TheLeanMachines", "All levels"],
+        ["Lower Body Stretching Routine", "0eqPHe1r5t8", "24:42", "TheLeanMachines", "All levels"]
+      ]},
+      { category: "Meditation and mindfulness", tone: "green", videos: [
+        ["10-Minute Meditation To Start Your Day", "ENYYb5vIMkU", "10:18", "Goodful", "All levels"],
+        ["Daily Calm | Be Present", "ZToicYcHIOU", "10:30", "Calm", "All levels"],
+        ["10-Minute Meditation For Stress", "z6X5oEIg6Ak", "10:18", "Goodful", "All levels"],
+        ["10-Minute Meditation to Reframe Stress", "sG7DBA-mgFY", "10:10", "Headspace", "All levels"],
+        ["10-Minute Meditation For Depression", "xRxT9cOKiM8", "10:19", "Goodful", "All levels"],
+        ["Daily Calm | Santosha", "5vI8Kh3-epg", "11:17", "Calm", "All levels"],
+        ["10-Minute Meditation For Sleep", "aEqlQvczMJQ", "10:02", "Goodful", "All levels"],
+        ["Reset | Decompress Your Body and Mind", "QHkXvPq2pQE", "10:08", "Headspace", "All levels"],
+        ["10 Minute Guided Meditation for Focus", "ausxoXBrmWs", "10:41", "Declutter The Mind", "All levels"]
+      ]},
+      { category: "HIIT and cardio", tone: "red", videos: [
+        ["10 Min Fat Burning Workout | No Equipment", "UheajlsZ72E", "13:00", "THENX", "All levels"],
+        ["Full Body Fat Burning Workout | 20 Minutes", "8VoV5w4Ea3A", "20:35", "The Body Coach TV", "All levels"],
+        ["Complete 12 Min Fat Burning Workout", "EhY6cGS7F-c", "14:51", "THENX", "All levels"],
+        ["20 Minute Fat Burning Bodyweight Workout", "F-I57N-hsMA", "21:11", "The Body Coach TV", "All levels"],
+        ["15 Minute Medicine Ball HIIT Workout", "s7LwfKnjxto", "17:13", "Juice and Toya", "All levels"],
+        ["10 Minute Cardio and Abs Workout", "urkqbwo6C3c", "10:50", "The Body Coach TV", "All levels"],
+        ["16 Minute Fat Burning Home Workout", "O4bBD6nq6KQ", "18:38", "The Body Coach TV", "All levels"],
+        ["20 Minute Fat Burning Workout | HIIT", "wBurKQX7h4Q", "20:39", "Global Cycling Network", "All levels"],
+        ["Legs and Glute Burning HIIT", "uWaTXQwJWCs", "22:27", "The Body Coach TV", "All levels"],
+        ["20 Minute Full Body HIIT Workout", "GLWgVmlBPiA", "21:48", "FightCamp", "All levels"],
+        ["10-Minute HIIT MMA Workout", "YXyaIHBTHRI", "10:17", "FightCamp", "All levels"],
+        ["Foam Roller Cardio Workout", "BXl1ywp_llw", "6:36", "FightCamp", "All levels"]
+      ]},
+      { category: "Indoor cycling", tone: "orange", videos: [
+        ["20 Minute Indoor Cycling Workout | Cardio Strength", "9MqdWAf4Q3c", "21:32", "RI:ID", "All levels"],
+        ["15 Minute HIIT Cardio Indoor Cycling Workout", "Pln_nGVk7Js", "15:08", "GCN Training", "All levels"],
+        ["20 Min Cardio | Spin Bike Workout", "ndh2LxWvwTc", "20:05", "GCN Training", "All levels"],
+        ["HIIT Indoor Cycling Workout | 30 Minute Intervals", "ZiGE3-L4vyg", "30:00", "Global Cycling Network", "All levels"],
+        ["Full Body Cardio Workout | Not Running or Cycling", "b-vUNkH4RzQ", "23:05", "FightCamp", "All levels"]
+      ]},
+      { category: "Strength and resistance", tone: "red", videos: [
+        ["Home Workout For Beginners | Dumbbells Only", "2fCKd-BQOhw", "11:28", "THENX", "Beginner"],
+        ["Complete Chest and Shoulder Home Workout", "M55Oq0hd3FQ", "12:54", "Chris Heria", "All levels"],
+        ["Complete Biceps and Triceps Workout", "lBy-7EFK30o", "12:28", "THENX", "All levels"],
+        ["Complete Chest Workout | Push-ups and Dumbbells", "wvF3fk3RLo8", "13:41", "THENX", "All levels"],
+        ["Upper Body Workout With Dumbbells", "K9s8bRd4Fxw", "16:56", "The Body Coach TV", "All levels"],
+        ["15 Minute Dumbbell Hell", "eyFkF6PMhCk", "16:59", "The Body Coach TV", "Advanced"],
+        ["20 Minute Upper Body Dumbbell Drop Sets", "yPg4Fq16tJU", "20:05", "The Body Coach TV", "All levels"],
+        ["12 Minute Upper-Body and Core Workout", "m61-Q-NIML8", "13:26", "The Body Coach TV", "All levels"],
+        ["30 Minute Boxing and Weights Workout", "aYFxshPB2bM", "28:59", "FightCamp", "All levels"],
+        ["15 Min Compound Leg Workout with Dumbbells", "r78WzW27-UI", "20:06", "TIFF x DAN", "All levels"],
+        ["Dumbbell Strength Workout", "2cJXpPoGUbU", "21:22", "The Body Coach TV", "All levels"],
+        ["20 Minute Full Body Home Workout with Dumbbells", "-h2d2B0VdSw", "20:13", "The Body Coach TV", "All levels"],
+        ["30 Minute Energizing Dumbbell HIIT Workout", "zHJACKlf-Jc", "31:07", "The Body Coach TV", "All levels"],
+        ["35 Minute Home Dumbbell Workout", "z3KYIe5ptQw", "35:00", "The Body Coach TV", "All levels"],
+        ["25 Minute Full Body Home Dumbbell Workout", "JwzQnJTfTGw", "25:34", "The Body Coach TV", "All levels"],
+        ["20 Minute Intense Dumbbell Shoulder Blast", "ijD70_7vR4w", "21:01", "The Body Coach TV", "All levels"],
+        ["Full Body Workout With Weights", "S2iE_Cq1MtA", "20:30", "The Body Coach TV", "All levels"],
+        ["20 Minute Full Body Dumbbell Pyramid Workout", "s-pjBopj2wk", "20:00", "The Body Coach TV", "All levels"]
+      ]},
+      { category: "Legs, glutes and core", tone: "orange", videos: [
+        ["Savage 10 Minute Leg Burner", "5cAh3m5HCpw", "10:51", "The Body Coach TV", "Advanced"],
+        ["15 Minute Leg Burner", "Txindp8nosc", "16:55", "The Body Coach TV", "All levels"],
+        ["20 Minute Legs, Bums and Tums", "T5ApFjVOFfI", "21:15", "The Body Coach TV", "All levels"],
+        ["12 Minute Leg Burner", "vzNUH11jGLA", "12:31", "The Body Coach TV", "All levels"],
+        ["Legs and Glutes Dumbbell Workout", "JCU0VHEX5UU", "13:18", "The Body Coach TV", "All levels"],
+        ["20 Minute Legs, Bums and Tums Workout", "sjKfIvxdUp0", "21:20", "The Body Coach TV", "All levels"],
+        ["15 Minutes 15 Moves | Leg Burning Workout", "CqV5wI3NQOg", "16:24", "The Body Coach TV", "All levels"],
+        ["15 Minute Leg Burner", "d-bA4qHWnL0", "16:05", "The Body Coach TV", "All levels"],
+        ["Quick 10 Minute Legs, Bums and Tums Workout", "tPv-8HBr8K0", "11:08", "The Body Coach TV", "All levels"],
+        ["25 Minute Legs and Bum Workout", "YkwMW1tfeoc", "25:33", "The Body Coach TV", "All levels"],
+        ["20 Minute Legs and Glutes Dumbbell Workout", "0hJDUWHG02M", "20:02", "The Body Coach TV", "All levels"],
+        ["12 Minute Core and Abs Workout", "LF9L8anE1G8", "12:57", "The Body Coach TV", "All levels"],
+        ["10 Minute Abs and Core Workout", "jzUpDjTBn7s", "11:01", "The Body Coach TV", "All levels"],
+        ["Abs in 7 Minutes", "3sEeVJxKJpE", "7:28", "The Body Coach TV", "All levels"],
+        ["15 Minute Leg and Glute HIIT Home Workout", "gp8bX7Xw6Gk", "16:31", "The Body Coach TV", "All levels"],
+        ["Lower Body and Abs Dumbbell Workout", "LNxmfy4ZukA", "20:06", "The Body Coach TV", "All levels"]
+      ]},
+      { category: "Boxing and kickboxing", tone: "red", videos: [
+        ["25-Minute Rumble No-Equipment Cardio-Boxing Workout", "sgwtp9mF8tI", "25:39", "PS Fit", "All levels"],
+        ["10 Minute Boxing Workout | Resistance Band Training", "k_YS-L4J_8I", "12:41", "FightCamp", "All levels"],
+        ["Boxing Core Workout Inspired by Manny Pacquiao", "5-8IFt6vauc", "7:05", "FightCamp", "All levels"],
+        ["10 Minute Medicine Ball Workout | Boxing Training", "DrBwtGqCoco", "12:52", "FightCamp", "All levels"],
+        ["20-Minute Beginner Boxing Heavy Bag Workout", "CuCrHHvTZsE", "24:00", "FightCamp", "Beginner"],
+        ["4 Round Boxing Workout At-Home", "Cx6JfrRO4eA", "23:36", "FightCamp", "All levels"],
+        ["10 Minute Heavy Bag Workout | 720 Punches", "HgoQDCv0Aog", "11:59", "NateBowerFitness", "All levels"],
+        ["4 Round Punching Bag Workout for Beginners", "wIKrLzBAf84", "21:48", "FightCamp", "Beginner"],
+        ["Beginner Boxing Workout | Fat-Burning Routine", "Y5NtN0YYykc", "21:45", "FightCamp", "Beginner"],
+        ["Ultimate 20 Minute Heavy Bag Workout", "QnpmH5NP1kE", "21:36", "NateBowerFitness", "All levels"],
+        ["25 Minute Punching Bag Boxing Workout", "9aYD0npgWxk", "31:09", "FightCamp", "Beginner"],
+        ["Ultimate 4-Round Boxing Training", "saQV33RIC20", "23:42", "FightCamp", "All levels"],
+        ["20-Minute Boxing Bag Workout | Fat Burner", "kD7EfItFkZk", "23:02", "FightCamp", "All levels"],
+        ["20-Minute Boxing Heavy Bag HIIT Workout", "Gy5nGxkQ6kU", "24:02", "FightCamp", "All levels"],
+        ["25-Minute Follow-Along Heavy Bag Workout", "wDH2iJwK6Uw", "32:42", "FightCamp", "All levels"],
+        ["20 Minute Boxing Workout | Level Up Your Boxing", "Vqn8BpqwuLQ", "24:36", "FightCamp", "All levels"],
+        ["20 Minute Boxing Bag Workout | Punches and Footwork", "30vRnjTkq5U", "23:08", "FightCamp", "All levels"],
+        ["15 Minute Follow Along Boxing Workout", "yUp5450cEyo", "20:47", "FightCamp", "All levels"],
+        ["20 Min Advanced Punching Bag Workout", "XRR_Wrs-eTM", "21:58", "FightCamp", "Advanced"],
+        ["20 Minute Punching Bag Boxing Workout", "KuYpr5-M2BA", "21:19", "NateBowerFitness", "Advanced"],
+        ["20 Min Easy To Follow Boxing Workout", "Fe96nd6S6cQ", "22:16", "FightCamp", "All levels"],
+        ["30 Minute Cardio Boxing Bag Workout", "J_932kM4pwg", "31:10", "FightCamp", "All levels"],
+        ["Cardio Boxing | 15 Minute Bag Workout", "IVvOmoB88FM", "24:35", "FightCamp", "All levels"],
+        ["20 Min Cardio Boxing Class", "Biu8g_O__4c", "22:35", "FightCamp", "All levels"],
+        ["Quick Home Boxing Workout", "h1NtoP55D-Q", "21:53", "FightCamp", "All levels"],
+        ["15 Minute Holiday Boxing Burn", "a2q4SeQqTPU", "20:47", "FightCamp", "All levels"],
+        ["25 Minute Boxing Workout At Home", "ZOSiBkZNKsA", "31:10", "FightCamp", "All levels"],
+        ["10 Minute Heavy Bag Workout", "1vwN_r20bHU", "10:51", "FightCamp", "All levels"],
+        ["Boxing for Beginners | Punching Form", "ZjXPL8oB1Ys", "21:07", "FightCamp", "Beginner"],
+        ["20 Minute Cardio Kickboxing Workout", "MirQq7_W3jE", "21:08", "FightCamp", "All levels"]
+      ]},
+      { category: "General fitness", tone: "green", videos: [
+        ["Learn How To Kick Like Stephen Thompson", "NZ7B8zBrB_I", "20:48", "FightCamp", "All levels"],
+        ["25 Min Full Body Resistance Band Workout", "T5f6wu_7s_8", "25:29", "TIFF x DAN", "All levels"],
+        ["Resistance Band Activation Warmup", "Ha-YBfxoxeE", "2:49", "FightCamp", "All levels"],
+        ["20 Minute Bodyweight Strength and Conditioning Workout", "SSqUPfYB9iw", "20:25", "FightCamp", "All levels"],
+        ["Core Activation Warmup", "fJK76sR8-k0", "2:51", "FightCamp", "All levels"],
+        ["Upper Body Activation Warmup", "Bd4q1laz1r8", "2:51", "FightCamp", "All levels"],
+        ["Lower Body Activation Warmup", "mT0iAMMCpGA", "2:51", "FightCamp", "All levels"]
+      ]}
+    ];
+
+    // Reactive State Control
+    const state = {
+      category: "All",
+      query: "",
+      difficulty: "All", // "All", "Beginner", "Advanced"
+      device: localStorage.getItem("myFitnessDevice") || "iphone",
+      favorites: JSON.parse(localStorage.getItem("myFitnessFavorites") || "[]"),
+      timer: {
+        work: 40,
+        rest: 20,
+        rounds: 8,
+        currentRound: 1,
+        phase: "READY", // READY, WORK, REST, FINISHED
+        timeLeft: 40,
+        intervalId: null
+      },
+      lastFocusedElement: null
+    };
+
+    const categoryList = document.getElementById("categoryList");
+    const videoGrid = document.getElementById("videoGrid");
+    const emptyState = document.getElementById("emptyState");
+    const search = document.getElementById("videoSearch");
+    const searchClear = document.getElementById("searchClear");
+    const modal = document.getElementById("youtubeModal");
+    const themeToggle = document.querySelector("[data-theme-toggle]");
+    const timerWidget = document.getElementById("timerWidget");
+    const timerHeader = document.getElementById("timerHeader");
+
+    // TWO-STAGE THUMBNAIL FALLBACKS
+    function removeDeadCard(img) {
+      img.removeAttribute('onerror');
+      img.removeAttribute('onload');
+      const card = img.closest('.video-card');
+      if (card) card.remove();
+    }
+
+    window.handleThumbError = function(img) {
+      if (img.src.includes('maxresdefault.jpg')) {
+        img.src = img.src.replace('maxresdefault.jpg', 'hqdefault.jpg');
+      } else {
+        removeDeadCard(img);
+      }
+    };
+
+    window.handleThumbLoad = function(img) {
+      if (img.naturalWidth === 120) {
+        removeDeadCard(img);
+      }
+    };
+
+    // AUDIO SYNTHESIZER (ZERO EXTERNAL ASSETS REQUIREMENT)
+    function playTone(freq, duration) {
+      try {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContextClass) return;
+        const ctx = new AudioContextClass();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        gain.gain.setValueAtTime(0.08, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+        osc.start();
+        osc.stop(ctx.currentTime + duration);
+      } catch (err) {}
+    }
+
+    function playWorkBeep() {
+      playTone(880, 0.25);
+    }
+
+    function playRestBeep() {
+      playTone(440, 0.4);
+    }
+
+    function playFinishedFanfare() {
+      playTone(523.25, 0.15); // C5
+      setTimeout(() => playTone(659.25, 0.15), 150); // E5
+      setTimeout(() => playTone(783.99, 0.3), 300); // G5
+    }
+
+    // MAP FLAT VIDEOS
+    function allVideos() {
+      return DATA.flatMap(group => group.videos.map(video => ({
+        category: group.category,
+        tone: group.tone,
+        title: video[0],
+        id: video[1],
+        duration: video[2],
+        channel: video[3],
+        level: video[4]
+      })));
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      }[char]));
+    }
+
+    // CATEGORIES RENDERING WITH FAVORITES PINNED
+    function renderCategories() {
+      const starredCount = state.favorites.length;
+      const total = allVideos().length;
+      
+      let html = "";
+      
+      // Pin Starred Folder if Favorites exist
+      html += `
+        <button class="category-button ${state.category === "Favorites" ? "is-active" : ""}" type="button" data-category="Favorites">
+          <span>★ Favorites</span>
+          <span>${starredCount}</span>
+        </button>
+      `;
+
+      html += `
+        <button class="category-button ${state.category === "All" ? "is-active" : ""}" type="button" data-category="All">
+          <span>All Videos</span>
+          <span>${total}</span>
+        </button>
+      `;
+
+      DATA.forEach(group => {
+        html += `
+          <button class="category-button ${group.category === state.category ? "is-active" : ""}" type="button" data-category="${escapeHtml(group.category)}">
+            <span>${escapeHtml(group.category)}</span>
+            <span>${group.videos.length}</span>
+          </button>
+        `;
+      });
+
+      categoryList.innerHTML = html;
+      document.getElementById("metricVideos").textContent = String(total);
+      document.getElementById("metricFavorites").textContent = String(starredCount);
+    }
+
+    // SEARCH & METADATA FILTERS
+    function filteredVideos() {
+      const query = state.query.trim().toLowerCase();
+      const diffFilter = state.difficulty.toLowerCase();
+
+      return allVideos().filter(video => {
+        // Category check
+        const inCategory = state.category === "All" || 
+                           (state.category === "Favorites" && state.favorites.includes(video.id)) ||
+                           video.category === state.category;
+        
+        // Difficulty Check
+        let matchesDiff = true;
+        if (diffFilter !== "all") {
+          matchesDiff = video.level.toLowerCase().includes(diffFilter);
+        }
+
+        // Search Check
+        const haystack = `${video.title} ${video.channel} ${video.level} ${video.category}`.toLowerCase();
+        const matchesQuery = !query || haystack.includes(query);
+
+        return inCategory && matchesDiff && matchesQuery;
+      });
+    }
+
+    // CARD RENDERING WITH PERSISTED FAVORITES
+    function renderVideos() {
+      const videos = filteredVideos();
+      videoGrid.innerHTML = videos.map(video => {
+        const isStarred = state.favorites.includes(video.id);
+        return `
+          <div class="video-card" data-tone="${escapeHtml(video.tone)}">
+            <button class="favorite-toggle ${isStarred ? "is-starred" : ""}" 
+                    type="button" 
+                    aria-label="${isStarred ? "Remove from favorites" : "Add to favorites"}" 
+                    data-id="${escapeHtml(video.id)}">
+              ★
+            </button>
+            <a href="https://youtu.be/${encodeURIComponent(video.id)}" target="_blank" rel="noopener noreferrer" style="display:contents;">
+              <span class="thumb">
+                <img src="https://i.ytimg.com/vi/${encodeURIComponent(video.id)}/maxresdefault.jpg" 
+                     onerror="handleThumbError(this)" 
+                     onload="handleThumbLoad(this)" 
+                     alt="${escapeHtml(video.title)} thumbnail" loading="lazy">
+                <span class="duration">${escapeHtml(video.duration)}</span>
+              </span>
+              <span class="video-body">
+                <span class="tag">${escapeHtml(video.category)}</span>
+                <strong class="video-title">${escapeHtml(video.title)}</strong>
+                <span class="video-meta"><span>${escapeHtml(video.channel)}</span><span>${escapeHtml(video.level)}</span></span>
+              </span>
+            </a>
+          </div>
+        `;
+      }).join("");
+      emptyState.classList.toggle("is-visible", videos.length === 0);
+    }
+
+    function setCategory(category) {
+      state.category = category;
+      renderCategories();
+      renderVideos();
+    }
+
+    function setDevice(device) {
+      state.device = device;
+      try {
+        localStorage.setItem("myFitnessDevice", device);
+      } catch(e){}
+      document.body.dataset.device = device;
+      document.querySelectorAll("[data-device-target]").forEach(button => {
+        button.classList.toggle("is-active", button.dataset.deviceTarget === device);
+      });
+      document.querySelectorAll("[data-ios], [data-android], [data-mac]").forEach(link => {
+        const web = link.dataset.web || link.href;
+        const ios = link.dataset.ios;
+        const android = link.dataset.android;
+        const mac = link.dataset.mac;
+        let target = web;
+        if (device === "iphone" && ios) target = ios;
+        if (device === "android" && android) target = android;
+        if (device === "mac" && mac) target = mac;
+        link.href = target;
+      });
+    }
+
+    function setTheme(theme) {
+      const normalized = theme === "dark" ? "dark" : "light";
+      document.documentElement.dataset.theme = normalized;
+      document.querySelector('meta[name="theme-color"]').setAttribute("content", normalized === "dark" ? "#11110f" : "#f6f4ef");
+      if (themeToggle) {
+        themeToggle.textContent = normalized === "dark" ? "Light" : "Dark";
+        themeToggle.setAttribute("aria-pressed", String(normalized === "dark"));
+      }
+      try {
+        localStorage.setItem("myFitnessTheme", normalized);
+      } catch (error) {}
+    }
+
+    // ACCESSIBLE MODAL FOCUS TRAPPING & DISCOVERY
+    function openYoutubeModal(e) {
+      state.lastFocusedElement = document.activeElement;
+      modal.classList.add("is-open");
+      modal.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+      
+      const focusable = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex="0"]');
+      if (focusable.length > 0) {
+        focusable[0].focus();
+      }
+    }
+
+    function closeYoutubeModal() {
+      modal.classList.remove("is-open");
+      modal.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+      if (state.lastFocusedElement) {
+        state.lastFocusedElement.focus();
+      }
+    }
+
+    // ACCESSIBLE MODAL KEYBOARD TRAPPING
+    modal.addEventListener("keydown", event => {
+      if (event.key === "Tab") {
+        const focusable = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex="0"]');
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          last.focus();
+          event.preventDefault();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          first.focus();
+          event.preventDefault();
+        }
+      }
+    });
+
+    // EVENT DELEGATION FOR STAR TOGGLING (FAVORITES)
+    videoGrid.addEventListener("click", event => {
+      const favBtn = event.target.closest(".favorite-toggle");
+      if (!favBtn) return;
+      
+      event.preventDefault();
+      event.stopPropagation();
+      
+      const id = favBtn.dataset.id;
+      const index = state.favorites.indexOf(id);
+      if (index === -1) {
+        state.favorites.push(id);
+        favBtn.classList.add("is-starred");
+        favBtn.setAttribute("aria-label", "Remove from favorites");
+      } else {
+        state.favorites.splice(index, 1);
+        favBtn.classList.remove("is-starred");
+        favBtn.setAttribute("aria-label", "Add to favorites");
+      }
+      
+      try {
+        localStorage.setItem("myFitnessFavorites", JSON.stringify(state.favorites));
+      } catch(e){}
+
+      renderCategories();
+      // If we are currently inside the Favorites folder, live refresh the grid
+      if (state.category === "Favorites") {
+        renderVideos();
+      }
+    });
+
+    // CATEGORY SELECTIONS
+    categoryList.addEventListener("click", event => {
+      const button = event.target.closest("[data-category]");
+      if (!button) return;
+      setCategory(button.dataset.category);
+    });
+
+    // WORKOUT INTERVAL TIMER LOGIC
+    const tPhase = document.getElementById("timerPhase");
+    const tTime = document.getElementById("timerTime");
+    const tRound = document.getElementById("timerRoundInfo");
+    const tWorkInput = document.getElementById("timerWork");
+    const tRestInput = document.getElementById("timerRest");
+    const tRoundsInput = document.getElementById("timerRounds");
+    const tStartBtn = document.getElementById("timerStartBtn");
+    const tResetBtn = document.getElementById("timerResetBtn");
+
+    function formatTime(seconds) {
+      const m = Math.floor(seconds / 60).toString().padStart(2, "0");
+      const s = (seconds % 60).toString().padStart(2, "0");
+      return `${m}:${s}`;
+    }
+
+    function initTimerDisplay() {
+      state.timer.work = parseInt(tWorkInput.value) || 40;
+      state.timer.rest = parseInt(tRestInput.value) || 20;
+      state.timer.rounds = parseInt(tRoundsInput.value) || 8;
+      
+      if (state.timer.phase === "READY") {
+        state.timer.timeLeft = state.timer.work;
+        tTime.textContent = formatTime(state.timer.timeLeft);
+        tRound.textContent = `Round 1 of ${state.timer.rounds}`;
+      }
+    }
+
+    function updateTimer() {
+      if (state.timer.timeLeft > 0) {
+        state.timer.timeLeft--;
+        tTime.textContent = formatTime(state.timer.timeLeft);
+        
+        // Final countdown warning audio feedback
+        if (state.timer.timeLeft <= 3 && state.timer.timeLeft > 0) {
+          playTone(600, 0.08);
+        }
+      } else {
+        // Handle Phase Transitions
+        if (state.timer.phase === "WORK") {
+          if (state.timer.rest > 0 && state.timer.currentRound < state.timer.rounds) {
+            state.timer.phase = "REST";
+            state.timer.timeLeft = state.timer.rest;
+            tPhase.textContent = "REST";
+            tPhase.style.color = "var(--muted)";
+            playRestBeep();
+          } else {
+            advanceRound();
+          }
+        } else if (state.timer.phase === "REST") {
+          advanceRound();
+        }
+        tTime.textContent = formatTime(state.timer.timeLeft);
+      }
+    }
+
+    function advanceRound() {
+      if (state.timer.currentRound < state.timer.rounds) {
+        state.timer.currentRound++;
+        state.timer.phase = "WORK";
+        state.timer.timeLeft = state.timer.work;
+        tPhase.textContent = "WORK";
+        tPhase.style.color = "var(--accent-dark)";
+        tRound.textContent = `Round ${state.timer.currentRound} of ${state.timer.rounds}`;
+        playWorkBeep();
+      } else {
+        // Complete Workout
+        clearInterval(state.timer.intervalId);
+        state.timer.intervalId = null;
+        state.timer.phase = "FINISHED";
+        tPhase.textContent = "FINISHED";
+        tPhase.style.color = "var(--accent-dark)";
+        tStartBtn.textContent = "Reset";
+        playFinishedFanfare();
+      }
+    }
+
+    tStartBtn.addEventListener("click", () => {
+      if (state.timer.phase === "FINISHED") {
+        resetTimer();
+        return;
+      }
+
+      if (state.timer.intervalId) {
+        // Pause timer
+        clearInterval(state.timer.intervalId);
+        state.timer.intervalId = null;
+        tStartBtn.textContent = "Resume";
+      } else {
+        // Start/Resume timer
+        if (state.timer.phase === "READY") {
+          state.timer.phase = "WORK";
+          tPhase.textContent = "WORK";
+          tPhase.style.color = "var(--accent-dark)";
+          playWorkBeep();
+        }
+        state.timer.intervalId = setInterval(updateTimer, 1000);
+        tStartBtn.textContent = "Pause";
+      }
+    });
+
+    function resetTimer() {
+      clearInterval(state.timer.intervalId);
+      state.timer.intervalId = null;
+      state.timer.phase = "READY";
+      state.timer.currentRound = 1;
+      tPhase.textContent = "READY";
+      tPhase.style.color = "var(--accent-dark)";
+      tStartBtn.textContent = "Start";
+      initTimerDisplay();
+    }
+
+    tResetBtn.addEventListener("click", resetTimer);
+    tWorkInput.addEventListener("change", initTimerDisplay);
+    tRestInput.addEventListener("change", initTimerDisplay);
+    tRoundsInput.addEventListener("change", initTimerDisplay);
+
+    // Collapsible widget logic
+    timerHeader.addEventListener("click", () => {
+      const isCollapsed = timerWidget.classList.toggle("is-collapsed");
+      timerHeader.setAttribute("aria-expanded", String(!isCollapsed));
+    });
+
+    timerHeader.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        timerHeader.click();
+      }
+    });
+
+    // SEARCH KEYBOARD SHORTCUT & DEBOUNCE
+    document.addEventListener("keydown", event => {
+      // Focus search on "/" key unless currently typing in form controls
+      if (event.key === "/" && document.activeElement !== search && !["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement.tagName)) {
+        event.preventDefault();
+        search.focus();
+      }
+      
+      // Escape closes open modals
+      if (event.key === "Escape" && modal.classList.contains("is-open")) {
+        closeYoutubeModal();
+      }
+    });
+
+    search.addEventListener("input", event => {
+      state.query = event.target.value;
+      searchClear.classList.toggle("is-visible", state.query.length > 0);
+      renderVideos();
+    });
+
+    searchClear.addEventListener("click", () => {
+      search.value = "";
+      state.query = "";
+      searchClear.classList.remove("is-visible");
+      search.focus();
+      renderVideos();
+    });
+
+    // DIFFICULTY SEGMENTS LOGIC
+    document.getElementById("difficultyFilter").addEventListener("click", event => {
+      const btn = event.target.closest("[data-diff]");
+      if (!btn) return;
+      
+      document.querySelectorAll("[data-diff]").forEach(b => b.classList.remove("is-active"));
+      btn.classList.add("is-active");
+      
+      state.difficulty = btn.dataset.diff;
+      renderVideos();
+    });
+
+    // DEVICE SELECTION CONTROLS
+    document.querySelectorAll("[data-device-target]").forEach(button => {
+      button.addEventListener("click", () => setDevice(button.dataset.deviceTarget));
+    });
+
+    // CONTROLLER HANDLERS
+    if (themeToggle) {
+      themeToggle.addEventListener("click", () => {
+        setTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark");
+      });
+    }
+
+    document.querySelectorAll("[data-open-youtube]").forEach(trigger => {
+      trigger.addEventListener("click", openYoutubeModal);
+    });
+
+    document.querySelectorAll("[data-close-youtube]").forEach(trigger => {
+      trigger.addEventListener("click", closeYoutubeModal);
+    });
+
+    document.querySelectorAll("[data-category-jump]").forEach(trigger => {
+      trigger.addEventListener("click", () => {
+        setCategory(trigger.dataset.categoryJump);
+        document.getElementById("library").scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
+
+    // GLOBAL SYSTEM INITIALIZATION
+    renderCategories();
+    renderVideos();
+    initTimerDisplay();
+
+    try {
+      const currentTheme = document.documentElement.dataset.theme || "light";
+      setTheme(currentTheme);
+    } catch (error) {
+      setTheme("light");
+    }
+
+    // Set saved device option or perform gentle user agent discovery fallback
+    if (localStorage.getItem("myFitnessDevice")) {
+      setDevice(localStorage.getItem("myFitnessDevice"));
+    } else {
+      setDevice(/Android/i.test(navigator.userAgent) ? "android" : /Mac/i.test(navigator.userAgent) ? "mac" : "iphone");
+    }
+  </script>
+</body>
+</html>
+```
+
+</details>
 
 
-## **3. Gemini 3.6 Flash New**
+
+## **3. Gemini 3.6 Flash (New)**
 ### **User Prompt**
 > Refactor and improve this [`index.html`](https://github.com/pedromanuelamaral/my-fitness/blob/main/index.html).
 
@@ -110,7 +4272,1970 @@ Emphasized **substantial but invisible improvements**:
 4. **Thumbnail Engine**: Resilient 2-stage loader (no broken cards).
 5. **Architecture**: IIFE encapsulation to prevent global scope pollution.
 
-> *Tone*: **Structured, comparative**, with a before/after table and emojis.
+<details>
+<summary><b>Code: Gemini 3.6 Flash New</b></summary>
+
+```html
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f6f4ef">
+  <title>My Fitness — Private Movement Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  
+  <!-- Early theme initialization to prevent Flash of Incorrect Theme (FOIT) -->
+  <script>
+    try {
+      const savedTheme = localStorage.getItem("myFitnessTheme");
+      const theme = savedTheme === "dark" || savedTheme === "light" ? savedTheme : "light";
+      document.documentElement.dataset.theme = theme;
+    } catch (e) {}
+  </script>
+
+  <style>
+    :root {
+      color-scheme: light;
+      --canvas: #f6f4ef;
+      --paper: #fffefa;
+      --paper-strong: #ffffff;
+      --ink: #191814;
+      --muted: #514d45;
+      --subtle: #6c665c;
+      --line: rgba(25, 24, 20, 0.18);
+      --line-strong: rgba(25, 24, 20, 0.3);
+      --charcoal: #20201d;
+      --charcoal-hover: #35342e;
+      --charcoal-2: #2d2c27;
+      --accent: #b7ff3c;
+      --accent-dark: #3e5309;
+      --warm: #f2e2c4;
+      --blue: #dbeaf1;
+      --green: #dcebd7;
+      --red: #f5d6d3;
+      --orange: #f4d5ad;
+      --shadow: 0 28px 80px rgba(72, 63, 42, 0.12);
+      --radius: 8px;
+      --speed: 260ms;
+      --curve: cubic-bezier(0.32, 0.72, 0, 1);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --inverse-ink: var(--ink);
+    }
+
+    [data-theme="dark"] {
+      color-scheme: dark;
+      --canvas: #11110f;
+      --paper: #191916;
+      --paper-strong: #20201d;
+      --ink: #f4f0e7;
+      --muted: #b4ad9e;
+      --subtle: #857d70;
+      --line: rgba(244, 240, 231, 0.12);
+      --line-strong: rgba(244, 240, 231, 0.22);
+      --charcoal: #f4f0e7;
+      --charcoal-hover: #e0dcd3;
+      --charcoal-2: #d9d2c4;
+      --accent: #b7ff3c;
+      --accent-dark: #d0ff72;
+      --warm: #3a3020;
+      --blue: #1d3340;
+      --green: #223520;
+      --red: #412521;
+      --orange: #432d17;
+      --shadow: 0 28px 80px rgba(0, 0, 0, 0.36);
+      --inverse-ink: #11110f;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      background: var(--canvas);
+      color: var(--ink);
+      font-family: Outfit, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: geometricPrecision;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100dvh;
+      background: var(--canvas);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background:
+        linear-gradient(115deg, rgba(246, 244, 239, 0.9), rgba(246, 244, 239, 0.68)),
+        url("https://images.unsplash.com/photo-1517963879433-6ad2a04a8a2e?w=1800&q=78&auto=format&fit=crop") center / cover;
+    }
+
+    [data-theme="dark"] body::before {
+      background:
+        linear-gradient(115deg, rgba(17, 17, 15, 0.96), rgba(17, 17, 15, 0.82)),
+        url("https://images.unsplash.com/photo-1517963879433-6ad2a04a8a2e?w=1800&q=78&auto=format&fit=crop") center / cover;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      opacity: 0.26;
+      background-image:
+        linear-gradient(rgba(25, 24, 20, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(25, 24, 20, 0.035) 1px, transparent 1px);
+      background-size: 34px 34px;
+      mask-image: linear-gradient(to bottom, #000, transparent 86%);
+    }
+
+    [data-theme="dark"] body::after {
+      opacity: 0.22;
+      background-image:
+        linear-gradient(rgba(244, 240, 231, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(244, 240, 231, 0.045) 1px, transparent 1px);
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button, input { font: inherit; }
+    button { border: 0; cursor: pointer; }
+
+    :focus-visible {
+      outline: 2px solid var(--accent-dark);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    .skip-link {
+      position: fixed;
+      left: 16px;
+      top: 16px;
+      z-index: 100;
+      transform: translateY(-140%);
+      background: var(--charcoal);
+      color: var(--paper);
+      padding: 10px 14px;
+      border-radius: var(--radius);
+      transition: transform var(--speed) var(--curve);
+    }
+
+    .skip-link:focus { transform: translateY(0); }
+
+    .shell {
+      width: min(1220px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 18px 0 calc(42px + var(--safe-bottom));
+    }
+
+    .topbar {
+      position: sticky;
+      top: 12px;
+      z-index: 40;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 48px;
+      padding: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.52);
+      border-radius: 999px;
+      background: rgba(255, 254, 250, 0.92);
+      box-shadow: 0 12px 40px rgba(73, 64, 45, 0.16);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    [data-theme="dark"] .topbar {
+      border-color: rgba(244, 240, 231, 0.1);
+      background: rgba(25, 25, 22, 0.76);
+      box-shadow: 0 12px 42px rgba(0, 0, 0, 0.26);
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 14px 7px 8px;
+      border-radius: 999px;
+      background: var(--charcoal);
+      color: var(--paper);
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    [data-theme="dark"] .brand {
+      background: #0f0f0d;
+      color: var(--ink);
+      border: 1px solid var(--line);
+    }
+
+    .brand-mark,
+    .icon-box {
+      display: inline-grid;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      background: var(--accent);
+      color: var(--ink);
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .nav {
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .nav a,
+    .device button {
+      border-radius: 999px;
+      color: var(--muted);
+      padding: 9px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      transition: background var(--speed) var(--curve), color var(--speed) var(--curve), transform var(--speed) var(--curve);
+      white-space: nowrap;
+    }
+
+    .theme-toggle {
+      min-height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 0 14px;
+      background: var(--paper-strong);
+      color: var(--ink);
+      font-weight: 800;
+      transition: background var(--speed) var(--curve), color var(--speed) var(--curve), transform var(--speed) var(--curve);
+    }
+
+    .theme-toggle:hover {
+      background: var(--accent);
+      color: var(--inverse-ink);
+    }
+
+    [data-theme="dark"] .theme-toggle {
+      background: rgba(244, 240, 231, 0.06);
+    }
+
+    .nav a:hover,
+    .device button:hover,
+    .device button.is-active {
+      background: rgba(25, 24, 20, 0.08);
+      color: var(--ink);
+    }
+
+    .nav a:active,
+    .device button:active,
+    .button:active,
+    .mode-card:active,
+    .video-card:active { transform: scale(0.985); }
+
+    .device {
+      display: flex;
+      gap: 2px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 3px;
+      background: rgba(255, 255, 255, 0.72);
+    }
+
+    [data-theme="dark"] .device {
+      background: rgba(244, 240, 231, 0.06);
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+      gap: clamp(28px, 5vw, 74px);
+      align-items: end;
+      min-height: 62dvh;
+      padding-bottom: 54px;
+    }
+
+    .eyebrow,
+    .section-kicker,
+    .tag,
+    .metric-label {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+      color: var(--accent-dark);
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 44px;
+      height: 2px;
+      background: var(--accent-dark);
+    }
+
+    h1 {
+      max-width: 820px;
+      margin: 0;
+      font-size: clamp(4.2rem, 12vw, 10.5rem);
+      line-height: 0.78;
+      letter-spacing: 0;
+      text-wrap: balance;
+    }
+
+    .hero-copy {
+      max-width: 650px;
+      margin: 26px 0 0;
+      color: var(--charcoal-2);
+      font-size: clamp(1.08rem, 1.7vw, 1.34rem);
+      line-height: 1.42;
+      text-wrap: pretty;
+    }
+
+    .hero-panel {
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.62);
+      background: rgba(255, 254, 250, 0.72);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 10px;
+    }
+
+    [data-theme="dark"] .hero-panel {
+      border-color: rgba(244, 240, 231, 0.1);
+      background: rgba(25, 25, 22, 0.72);
+    }
+
+    .hero-panel-inner {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--paper-strong);
+      overflow: hidden;
+    }
+
+    .hero-panel-head {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: center;
+      padding: 22px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .today {
+      margin: 0;
+      font-weight: 800;
+      font-size: 1.1rem;
+    }
+
+    .today-sub {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .status-dot {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 50% 50%, var(--accent) 0 34%, transparent 36%),
+        conic-gradient(from 0deg, var(--accent), #f4d5ad, #dbeaf1, var(--accent));
+      animation: breathe 2200ms var(--curve) infinite;
+    }
+
+    @keyframes breathe {
+      0%, 100% { transform: scale(0.94); opacity: 0.82; }
+      50% { transform: scale(1); opacity: 1; }
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .metric {
+      padding: 20px 18px;
+      border-right: 1px solid var(--line);
+    }
+
+    .metric:last-child { border-right: 0; }
+
+    .metric-value {
+      display: block;
+      margin-bottom: 6px;
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    .metric-label { color: var(--muted); font-size: 9px; }
+
+    .account-gate {
+      padding: 22px;
+      background: #1c1b18;
+      color: #fffefa;
+    }
+
+    [data-theme="dark"] .account-gate {
+      background: #151512;
+      color: var(--ink);
+    }
+
+    .account-gate p {
+      margin: 0 0 14px;
+      color: rgba(255, 254, 250, 0.76);
+      line-height: 1.5;
+    }
+
+    [data-theme="dark"] .account-gate p {
+      color: var(--muted);
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .hero-actions { margin-top: 26px; }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 42px;
+      border-radius: 7px;
+      padding: 0 14px;
+      background: var(--charcoal);
+      color: var(--paper);
+      font-weight: 800;
+      transition: transform var(--speed) var(--curve), background var(--speed) var(--curve), color var(--speed) var(--curve);
+    }
+
+    .button:hover { background: var(--charcoal-hover); }
+
+    .button.light { background: var(--paper); color: var(--ink); }
+    .button.light:hover { background: var(--accent); color: var(--inverse-ink); }
+
+    [data-theme="dark"] .button.light { background: #f4f0e7; color: #11110f; }
+    [data-theme="dark"] .button.light:hover { background: var(--accent); color: #11110f; }
+
+    .button.ghost { background: transparent; color: var(--muted); border: 1px solid var(--line); }
+    .button.ghost:hover { color: var(--ink); border-color: var(--line-strong); }
+
+    .account-gate .button.ghost,
+    .modal-inner .button.ghost {
+      color: rgba(255, 254, 250, 0.86);
+      border-color: rgba(255, 254, 250, 0.26);
+    }
+
+    .account-gate .button.ghost:hover,
+    .modal-inner .button.ghost:hover {
+      color: #fffefa;
+      border-color: rgba(255, 254, 250, 0.44);
+    }
+
+    [data-theme="dark"] .account-gate .button.ghost,
+    [data-theme="dark"] .modal-inner .button.ghost {
+      color: var(--ink);
+      border-color: var(--line);
+    }
+
+    [data-theme="dark"] .account-gate .button.ghost:hover,
+    [data-theme="dark"] .modal-inner .button.ghost:hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: var(--line-strong);
+    }
+
+    .button .arrow {
+      display: inline-grid;
+      place-items: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.16);
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 12px;
+    }
+
+    .button.light .arrow { background: rgba(25, 24, 20, 0.1); }
+    [data-theme="dark"] .button .arrow { background: rgba(17, 17, 15, 0.15); }
+    [data-theme="dark"] .button.light .arrow { background: rgba(17, 17, 15, 0.15); }
+
+    section {
+      padding: 76px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 0.72fr) minmax(280px, 0.28fr);
+      gap: 24px;
+      align-items: end;
+      margin-bottom: 26px;
+    }
+
+    .section-kicker {
+      display: block;
+      margin-bottom: 11px;
+      color: var(--accent-dark);
+    }
+
+    h2 {
+      margin: 0;
+      max-width: 720px;
+      font-size: clamp(2.1rem, 4vw, 4.8rem);
+      line-height: 0.9;
+      letter-spacing: 0;
+      text-wrap: balance;
+    }
+
+    .section-note {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+      text-wrap: pretty;
+    }
+
+    .mood-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.16fr) minmax(0, 0.84fr);
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .spotify-card {
+      min-width: 0;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: var(--paper-strong);
+      overflow: hidden;
+    }
+
+    .spotify-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .spotify-label strong { font-size: 1rem; }
+    .spotify-label span { color: var(--muted); font-size: 0.9rem; }
+
+    .spotify-card iframe {
+      display: block;
+      width: 100%;
+      height: 152px;
+      border: 0;
+    }
+
+    .mode-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr 1fr;
+      grid-auto-rows: minmax(178px, auto);
+      gap: 14px;
+    }
+
+    .mode-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-height: 178px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--paper-strong);
+      overflow: hidden;
+      transition: transform var(--speed) var(--curve), border-color var(--speed) var(--curve), background var(--speed) var(--curve);
+    }
+
+    .mode-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 7px;
+      background: var(--mode-color, var(--accent));
+      opacity: 0.9;
+    }
+
+    .mode-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--line-strong);
+      background: #fffdf5;
+    }
+
+    [data-theme="dark"] .mode-card:hover {
+      background: #242421;
+      border-color: var(--line-strong);
+    }
+
+    .mode-card.wide { grid-column: span 2; }
+    .mode-card[data-tone="nike"] { --mode-color: #f0a84c; }
+    .mode-card[data-tone="spotify"] { --mode-color: #8fc37d; }
+    .mode-card[data-tone="apple"] { --mode-color: #d98c85; }
+    .mode-card[data-tone="youtube"] { --mode-color: #c93b32; }
+    .mode-card[data-tone="wellness"] { --mode-color: #9cc7dc; }
+
+    .mode-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .mode-card h3 {
+      margin: auto 0 8px;
+      font-size: clamp(1.35rem, 2.1vw, 2.25rem);
+      line-height: 0.95;
+      letter-spacing: 0;
+    }
+
+    .mode-card p {
+      max-width: 36ch;
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.42;
+    }
+
+    .tag {
+      width: max-content;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 5px 7px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.55);
+      font-size: 9px;
+    }
+
+    [data-theme="dark"] .tag {
+      background: rgba(244, 240, 231, 0.06);
+      border-color: var(--line-strong);
+    }
+
+    .library-shell {
+      display: grid;
+      grid-template-columns: 290px minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .library-tools {
+      position: sticky;
+      top: 88px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255, 254, 250, 0.82);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      overflow: hidden;
+    }
+
+    [data-theme="dark"] .library-tools {
+      background: rgba(25, 25, 22, 0.82);
+    }
+
+    .search-wrap {
+      padding: 14px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .search-label-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .search-wrap label {
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .search-kbd {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 0.72rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--line);
+      background: var(--paper-strong);
+      color: var(--muted);
+    }
+
+    .search-input-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 10px;
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    .search {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper-strong);
+      color: var(--ink);
+      padding: 10px 32px 10px 32px;
+      outline: none;
+      transition: border-color var(--speed) var(--curve), box-shadow var(--speed) var(--curve);
+    }
+
+    [data-theme="dark"] .search {
+      background: #151512;
+    }
+
+    .search:focus {
+      border-color: var(--accent-dark);
+      box-shadow: 0 0 0 4px rgba(183, 255, 60, 0.32);
+    }
+
+    .search-clear {
+      position: absolute;
+      right: 8px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 1.2rem;
+      padding: 0 4px;
+      line-height: 1;
+      border-radius: 4px;
+    }
+
+    .search-clear:hover { color: var(--ink); }
+
+    .search-status {
+      margin-top: 6px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      min-height: 1.1em;
+    }
+
+    .category-list {
+      display: grid;
+      gap: 0;
+      padding: 8px;
+    }
+
+    .category-button {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      width: 100%;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--muted);
+      padding: 11px 10px;
+      text-align: left;
+      transition: background var(--speed) var(--curve), color var(--speed) var(--curve);
+    }
+
+    .category-button:hover,
+    .category-button.is-active {
+      background: var(--charcoal);
+      color: var(--paper);
+    }
+
+    .category-button span:first-child {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-weight: 800;
+    }
+
+    .category-button span:last-child {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 0.78rem;
+    }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .video-card-wrap {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .video-card {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      min-height: 184px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255, 254, 250, 0.9);
+      overflow: hidden;
+      transition: transform var(--speed) var(--curve), border-color var(--speed) var(--curve), background var(--speed) var(--curve);
+    }
+
+    [data-theme="dark"] .video-card {
+      background: rgba(32, 32, 29, 0.9);
+    }
+
+    .video-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--line-strong);
+      background: var(--paper-strong);
+    }
+
+    [data-theme="dark"] .video-card:hover {
+      background: #242421;
+      border-color: var(--line-strong);
+    }
+
+    .fav-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      z-index: 10;
+      display: inline-grid;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(25, 24, 20, 0.75);
+      color: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(4px);
+      transition: transform var(--speed) var(--curve), color var(--speed) var(--curve), background var(--speed) var(--curve);
+    }
+
+    .fav-btn:hover {
+      transform: scale(1.1);
+      color: #ff4d4d;
+      background: rgba(25, 24, 20, 0.92);
+    }
+
+    .fav-btn.is-fav {
+      color: #ff4d4d;
+      background: rgba(25, 24, 20, 0.92);
+    }
+
+    .thumb {
+      position: relative;
+      display: block;
+      aspect-ratio: 16 / 9;
+      background: #d9d3c6;
+      overflow: hidden;
+    }
+
+    [data-theme="dark"] .thumb {
+      background: #262623;
+    }
+
+    .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: saturate(0.9) contrast(1.02);
+      transition: transform 520ms var(--curve);
+    }
+
+    .video-card:hover .thumb img { transform: scale(1.045); }
+
+    .duration {
+      position: absolute;
+      left: 8px;
+      bottom: 8px;
+      border-radius: 4px;
+      padding: 3px 6px;
+      background: rgba(25, 24, 20, 0.86);
+      color: var(--paper);
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .video-body {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      padding: 14px;
+    }
+
+    .video-title {
+      margin: 0 0 12px;
+      color: var(--ink);
+      font-size: 1rem;
+      line-height: 1.18;
+      font-weight: 800;
+      text-wrap: pretty;
+    }
+
+    .video-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: auto;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .video-meta span {
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .empty-state {
+      display: none;
+      border: 1px dashed var(--line-strong);
+      border-radius: 14px;
+      padding: 28px;
+      background: rgba(255, 254, 250, 0.72);
+    }
+
+    [data-theme="dark"] .empty-state { background: rgba(25, 24, 22, 0.5); }
+
+    .empty-state.is-visible { display: block; }
+    .empty-state h3 { margin: 0 0 8px; font-size: 1.4rem; }
+    .empty-state p { margin: 0; color: var(--muted); }
+
+    .wellness-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 0.52fr);
+      gap: 14px;
+    }
+
+    .recovery-card {
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: var(--paper-strong);
+      padding: 26px;
+    }
+
+    .recovery-card h3 {
+      margin: 0 0 12px;
+      font-size: clamp(1.6rem, 2.4vw, 2.8rem);
+      line-height: 0.96;
+    }
+
+    .recovery-card p {
+      margin: 0 0 18px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .compact-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .compact-link {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: #fbfaf6;
+      font-weight: 800;
+      transition: background var(--speed) var(--curve), transform var(--speed) var(--curve);
+    }
+
+    [data-theme="dark"] .compact-link {
+      background: #181815;
+    }
+
+    .compact-link:hover { background: var(--green); transform: translateY(-1px); }
+    .compact-link span:last-child { color: var(--muted); font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.8rem; }
+
+    footer {
+      padding-top: 28px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      display: none;
+      align-items: end;
+      justify-content: center;
+      padding: 18px;
+    }
+
+    .modal.is-open { display: flex; }
+
+    .modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(25, 24, 20, 0.64);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .modal-card {
+      position: relative;
+      width: min(520px, 100%);
+      border-radius: 18px;
+      background: #1c1b18;
+      color: #fffefa;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      padding: 10px;
+      box-shadow: 0 30px 100px rgba(0, 0, 0, 0.36);
+      transform: translateY(12px);
+      animation: modal-in 320ms var(--curve) forwards;
+    }
+
+    [data-theme="dark"] .modal-card {
+      background: #181816;
+      color: var(--ink);
+      border-color: var(--line-strong);
+    }
+
+    @keyframes modal-in {
+      to { transform: translateY(0); }
+    }
+
+    .modal-inner {
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      padding: 22px;
+    }
+
+    [data-theme="dark"] .modal-inner { border-color: var(--line); }
+
+    .modal-inner h3 {
+      margin: 0 0 10px;
+      font-size: 2rem;
+      line-height: 0.96;
+    }
+
+    .modal-inner p {
+      margin: 0 0 18px;
+      color: rgba(255, 254, 250, 0.72);
+      line-height: 1.55;
+    }
+
+    [data-theme="dark"] .modal-inner p { color: var(--muted); }
+
+    .playlist-stack {
+      display: grid;
+      gap: 8px;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    [data-theme="dark"] .playlist-stack { border-top-color: var(--line); }
+
+    .playlist-stack .button {
+      justify-content: space-between;
+      background: rgba(255, 255, 255, 0.08);
+      color: #fffefa;
+    }
+
+    .playlist-stack .button:hover { background: rgba(255, 255, 255, 0.14); }
+
+    [data-theme="dark"] .playlist-stack .button {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--ink);
+    }
+
+    [data-theme="dark"] .playlist-stack .button:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+    
+    [data-theme="dark"] .playlist-stack .button .arrow {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    [data-device="watch"] .hero { min-height: auto; padding-bottom: 24px; }
+    [data-device="watch"] h1 { font-size: clamp(3.2rem, 16vw, 5.4rem); }
+    [data-device="watch"] .mood-grid,
+    [data-device="watch"] .mode-grid,
+    [data-device="watch"] .library-shell,
+    [data-device="watch"] .wellness-grid { grid-template-columns: 1fr; }
+    [data-device="watch"] .mode-card.wide { grid-column: auto; }
+    [data-device="watch"] .video-grid { grid-template-columns: 1fr; }
+    [data-device="watch"] .spotify-card iframe { height: 92px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 1ms !important;
+        scroll-behavior: auto !important;
+        transition-duration: 1ms !important;
+      }
+    }
+
+    @media (max-width: 1020px) {
+      .hero,
+      .section-head,
+      .mood-grid,
+      .library-shell,
+      .wellness-grid { grid-template-columns: 1fr; }
+      .library-tools { position: static; }
+      .mode-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .mode-card.wide { grid-column: span 2; }
+      .video-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 740px) {
+      .shell { width: min(100% - 24px, 1220px); padding-top: 12px; }
+      .topbar {
+        position: relative;
+        top: 0;
+        grid-template-columns: 1fr;
+        align-items: stretch;
+        border-radius: 14px;
+        margin-bottom: 22px;
+        padding: 8px;
+        gap: 8px;
+      }
+      .brand {
+        width: 100%;
+        justify-content: flex-start;
+        border-radius: 10px;
+        justify-self: stretch;
+      }
+      .top-actions {
+        position: static;
+        grid-column: 1 / -1;
+        align-items: center;
+        justify-content: flex-end;
+      }
+      .theme-toggle {
+        min-height: 40px;
+        border-radius: 8px;
+        padding: 0 11px;
+        background: var(--accent);
+        color: var(--ink);
+        border-color: rgba(25, 24, 20, 0.25);
+      }
+      [data-theme="dark"] .theme-toggle { background: rgba(244, 240, 231, 0.1); }
+      .device { display: none; }
+      .nav {
+        grid-column: 1 / -1;
+        overflow-x: auto;
+        justify-content: flex-start;
+        gap: 6px;
+        padding: 4px 0 0;
+      }
+      .nav a {
+        background: rgba(25, 24, 20, 0.06);
+        padding: 9px 11px;
+      }
+      [data-theme="dark"] .nav a { background: rgba(244, 240, 231, 0.08); }
+      .hero {
+        gap: 22px;
+        min-height: auto;
+        padding: 24px 0 34px;
+      }
+      .eyebrow { margin-bottom: 12px; font-size: 9px; }
+      .eyebrow::before { width: 42px; }
+      h1 {
+        max-width: 8ch;
+        font-size: clamp(3.35rem, 17vw, 4.35rem);
+        line-height: 0.84;
+        overflow-wrap: normal;
+      }
+      .hero-copy {
+        max-width: 100%;
+        margin-top: 18px;
+        font-size: 1.02rem;
+        line-height: 1.42;
+      }
+      .button-row { gap: 8px; }
+      .button {
+        min-height: 42px;
+        padding: 0 12px;
+        font-size: 0.94rem;
+      }
+      section { padding: 48px 0; }
+      .section-head { gap: 12px; margin-bottom: 18px; }
+      h2 {
+        font-size: clamp(2.35rem, 12vw, 3.3rem);
+        line-height: 0.92;
+      }
+      .section-note { font-size: 0.98rem; }
+      .hero-panel-head,
+      .account-gate,
+      .recovery-card { padding: 18px; }
+      .hero-panel { border-radius: 16px; }
+      .metric-grid { grid-template-columns: 1fr; }
+      .metric { border-right: 0; border-bottom: 1px solid var(--line); }
+      .metric:last-child { border-bottom: 0; }
+      .metric { padding: 15px 18px; }
+      .spotify-label {
+        display: grid;
+        gap: 4px;
+      }
+      .spotify-card iframe { height: 112px; }
+      .mode-card { min-height: 158px; padding: 18px; }
+      .mode-grid,
+      .video-grid { grid-template-columns: 1fr; }
+      .mode-card.wide { grid-column: auto; }
+      .library-shell { gap: 12px; }
+      .category-list {
+        display: flex;
+        gap: 6px;
+        overflow-x: auto;
+        padding: 8px;
+      }
+      .category-button {
+        grid-template-columns: auto auto;
+        flex: 0 0 auto;
+        width: auto;
+      }
+    }
+  </style>
+</head>
+<body data-device="iphone">
+  <a class="skip-link" href="#library">Skip to library</a>
+  <div class="shell">
+    <header class="topbar" aria-label="Primary navigation">
+      <a class="brand" href="#top" aria-label="My Fitness home"><span class="brand-mark" aria-hidden="true">MF</span><span>My Fitness</span></a>
+      <nav class="nav" aria-label="Sections">
+        <a href="#mood">Mood</a>
+        <a href="#modes">Modes</a>
+        <a href="#library">Library</a>
+        <a href="#wellness">Wellness</a>
+      </nav>
+      <div class="top-actions">
+        <button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false">Dark</button>
+        <div class="device" aria-label="Device preview switcher">
+          <button class="is-active" type="button" data-device-target="iphone" aria-pressed="true">iPhone</button>
+          <button type="button" data-device-target="android" aria-pressed="false">Android</button>
+          <button type="button" data-device-target="mac" aria-pressed="false">Mac</button>
+          <button type="button" data-device-target="watch" aria-pressed="false">Watch</button>
+        </div>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="page-title">
+        <div>
+          <span class="eyebrow">Private movement hub</span>
+          <h1 id="page-title">My Fitness</h1>
+          <p class="hero-copy">Pick a mode, set the audio environment, and open training without losing the thread. YouTube routes through an account check first because mixing accounts is exactly the kind of preventable mess this page should stop.</p>
+          <div class="button-row hero-actions">
+            <a class="button" href="#modes">Choose training <span class="arrow" aria-hidden="true">→</span></a>
+            <button class="button ghost" type="button" data-open-youtube>Open YouTube gate</button>
+          </div>
+        </div>
+
+        <aside class="hero-panel" aria-label="Dashboard summary">
+          <div class="hero-panel-inner">
+            <div class="hero-panel-head">
+              <div>
+                <p class="today">Today: choose the lowest-friction session.</p>
+                <p class="today-sub">Music first, workout second, recovery always visible.</p>
+              </div>
+              <span class="status-dot" aria-hidden="true"></span>
+            </div>
+            <div class="metric-grid" aria-label="Library metrics">
+              <div class="metric"><span class="metric-value" id="metricVideos">0</span><span class="metric-label">Videos loaded</span></div>
+              <div class="metric"><span class="metric-value">10</span><span class="metric-label">Categories</span></div>
+              <div class="metric"><span class="metric-value">5</span><span class="metric-label">Training modes</span></div>
+            </div>
+            <div class="account-gate">
+              <p><strong>YouTube account gate.</strong> Before any playlist opens, switch into the managed Fitness account. This page does not pretend it can control Google account state from HTML.</p>
+              <div class="button-row">
+                <a class="button light" href="https://accounts.google.com/ServiceLogin?service=youtube" target="_blank" rel="noopener noreferrer">Switch account <span class="arrow" aria-hidden="true">→</span></a>
+                <button class="button ghost" type="button" data-open-youtube>Playlists</button>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <section id="mood" aria-labelledby="mood-title">
+        <div class="section-head">
+          <div>
+            <span class="section-kicker">Set the mood</span>
+            <h2 id="mood-title">Two audio lanes, no hunting.</h2>
+          </div>
+          <p class="section-note">Keep the players at the top, but frame them as the start of the session instead of random embeds sitting above a link dump.</p>
+        </div>
+        <div class="mood-grid">
+          <article class="spotify-card">
+            <div class="spotify-label"><strong>Focus</strong><span>steady work, warm-up, recovery</span></div>
+            <iframe title="Spotify focus playlist" src="https://open.spotify.com/embed/playlist/37i9dQZF1EIhIOnAU06Sx0?utm_source=generator&theme=0" loading="lazy" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+          </article>
+          <article class="spotify-card">
+            <div class="spotify-label"><strong>Energy</strong><span>harder sessions</span></div>
+            <iframe title="Spotify energy playlist" src="https://open.spotify.com/embed/playlist/37i9dQZF1EpzHyLXxaZMNE?utm_source=generator&theme=0" loading="lazy" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+          </article>
+        </div>
+      </section>
+
+      <section id="modes" aria-labelledby="modes-title">
+        <div class="section-head">
+          <div>
+            <span class="section-kicker">Choose your training mode</span>
+            <h2 id="modes-title">Five routes, each with a job.</h2>
+          </div>
+          <p class="section-note">The buttons are real tap targets. Native-app deep links are kept for iPhone, Android and Mac, with browser fallbacks when the app link cannot open.</p>
+        </div>
+        <div class="mode-grid">
+          <a class="mode-card wide" data-tone="nike" href="https://niketrainingclub.sng.link/Ara19/24fe/6itr" data-web="https://niketrainingclub.sng.link/Ara19/24fe/6itr" data-ios="niketraining://" data-android="intent://niketraining#Intent;scheme=niketraining;package=com.nike.ntc;end">
+            <div class="mode-top"><span class="icon-box">NT</span><span class="tag">Guided</span></div>
+            <h3>Nike Training Club</h3>
+            <p>Use this when you want a planned session with minimal setup and no equipment spiral.</p>
+          </a>
+          <a class="mode-card" data-tone="spotify" href="https://open.spotify.com/genre/0JQ5DAqbMKFJ6dHNHTv6Mx" data-web="https://open.spotify.com/genre/0JQ5DAqbMKFJ6dHNHTv6Mx" data-ios="spotify:genre:0JQ5DAqbMKFJ6dHNHTv6Mx" data-android="intent://open.spotify.com/genre/0JQ5DAqbMKFJ6dHNHTv6Mx#Intent;scheme=https;package=com.spotify.music;end">
+            <div class="mode-top"><span class="icon-box">SP</span><span class="tag">Audio</span></div>
+            <h3>Spotify Fitness</h3>
+            <p>Use music as the driver and let the session follow the pace.</p>
+          </a>
+          <a class="mode-card" data-tone="apple" href="https://fitness.apple.com" data-web="https://fitness.apple.com" data-ios="fitness://" data-mac="fitness://">
+            <div class="mode-top"><span class="icon-box">AF</span><span class="tag">Apple</span></div>
+            <h3>Apple Fitness+</h3>
+            <p>Yoga, core, cooldown and Apple Health logging.</p>
+          </a>
+          <button class="mode-card" data-tone="youtube" type="button" data-open-youtube>
+            <div class="mode-top"><span class="icon-box">YT</span><span class="tag">Gate</span></div>
+            <h3>YouTube Training</h3>
+            <p>Always starts with the account reminder before opening playlists or curated videos.</p>
+          </button>
+          <a class="mode-card wide" data-tone="wellness" href="#wellness">
+            <div class="mode-top"><span class="icon-box">WR</span><span class="tag">Recovery</span></div>
+            <h3>Wellness and recovery</h3>
+            <p>Meditation, stretching and lower-intensity routes stay visible so recovery does not become an afterthought.</p>
+          </a>
+        </div>
+      </section>
+
+      <section id="library" aria-labelledby="library-title">
+        <div class="section-head">
+          <div>
+            <span class="section-kicker">Curated video library</span>
+            <h2 id="library-title">Searchable, grouped, not a thumbnail landfill.</h2>
+          </div>
+          <p class="section-note">Search across video titles, channels, or levels. Bookmark videos to your private Favorites list.</p>
+        </div>
+        <div class="library-shell">
+          <aside class="library-tools" aria-label="Video filters">
+            <div class="search-wrap">
+              <div class="search-label-row">
+                <label for="videoSearch">Search videos</label>
+                <kbd class="search-kbd" title="Press / or Cmd+K to focus">/</kbd>
+              </div>
+              <div class="search-input-box">
+                <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                <input class="search" id="videoSearch" type="search" placeholder="boxing, core, calm, dumbbell..." autocomplete="off">
+                <button class="search-clear" id="searchClear" type="button" aria-label="Clear search" hidden>&times;</button>
+              </div>
+              <div class="search-status" id="searchStatus" aria-live="polite"></div>
+            </div>
+            <div class="category-list" id="categoryList" role="tablist" aria-label="Video category filter"></div>
+          </aside>
+          <div>
+            <div class="video-grid" id="videoGrid"></div>
+            <div class="empty-state" id="emptyState">
+              <h3>No videos match that filter.</h3>
+              <p>Try a broader term or switch categories. Empty UI is a bug when it gives no way back.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="wellness" aria-labelledby="wellness-title">
+        <div class="section-head">
+          <div>
+            <span class="section-kicker">Wellness and recovery</span>
+            <h2 id="wellness-title">Recovery is part of the system.</h2>
+          </div>
+          <p class="section-note">This section keeps meditation and Apple Fitness close instead of hiding recovery under the same visual weight as hard training.</p>
+        </div>
+        <div class="wellness-grid">
+          <article class="recovery-card">
+            <h3>Open Apple Fitness+ for yoga, core or cooldown.</h3>
+            <p>Use Fitness+ when you want the session logged cleanly and you do not want YouTube recommendations shaping the next hour.</p>
+            <div class="button-row">
+              <a class="button" href="https://fitness.apple.com" data-web="https://fitness.apple.com" data-ios="fitness://" data-mac="fitness://">Open Fitness+ <span class="arrow" aria-hidden="true">→</span></a>
+              <button class="button ghost" type="button" data-category-jump="Meditation and mindfulness">Meditations</button>
+            </div>
+          </article>
+          <article class="recovery-card">
+            <h3>Quick reset queue.</h3>
+            <p>Short sessions that are useful when the full training library is the wrong tool.</p>
+            <div class="compact-list">
+              <a class="compact-link" href="https://youtu.be/ENYYb5vIMkU" target="_blank" rel="noopener noreferrer"><span>10-minute morning meditation</span><span>10:18</span></a>
+              <a class="compact-link" href="https://youtu.be/aEqlQvczMJQ" target="_blank" rel="noopener noreferrer"><span>10-minute sleep meditation</span><span>10:02</span></a>
+              <a class="compact-link" href="https://youtu.be/zUu0zs9WeSg" target="_blank" rel="noopener noreferrer"><span>Foam rolling recovery</span><span>7:14</span></a>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      My Fitness. Self-contained HTML dashboard. No build step, no accounts stored, no fake login control.
+    </footer>
+  </div>
+
+  <div class="modal" id="youtubeModal" role="dialog" aria-modal="true" aria-labelledby="youtubeModalTitle" aria-hidden="true">
+    <div class="modal-backdrop" data-close-youtube></div>
+    <div class="modal-card">
+      <div class="modal-inner">
+        <h3 id="youtubeModalTitle">Switch YouTube account first.</h3>
+        <p>You have multiple accounts. Open the account switcher, confirm the managed Fitness account, then choose a playlist. This gate is intentionally before the playlist links.</p>
+        <div class="button-row">
+          <a class="button light" href="https://accounts.google.com/ServiceLogin?service=youtube" target="_blank" rel="noopener noreferrer">Switch account <span class="arrow" aria-hidden="true">→</span></a>
+          <button class="button ghost" type="button" data-close-youtube>Cancel</button>
+        </div>
+        <div class="playlist-stack">
+          <a class="button" href="https://youtube.com/playlist?list=PLK9S9qvcANFv5Uo3sM9m-k65P2jgBDxc3" target="_blank" rel="noopener noreferrer">Boxing workouts <span class="arrow" aria-hidden="true">→</span></a>
+          <a class="button" href="https://youtube.com/playlist?list=PLyCLoPd4VxBt9owIB5bTCrViAMIkCVGCb" target="_blank" rel="noopener noreferrer">Leg workouts <span class="arrow" aria-hidden="true">→</span></a>
+          <a class="button" href="https://youtube.com/playlist?list=PLxx3JZXtxiY7Av35ak7Coroz0RQRl6A6I" target="_blank" rel="noopener noreferrer">Full curated library <span class="arrow" aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const DATA = [
+        { category: "Beginner and bodyweight", tone: "green", videos: [
+          ["12 Minute At-Home Workout | No Equipment Needed", "IIuWOk1jbcE", "14:17", "FightCamp", "All levels"],
+          ["Basic Footwork Drills For Beginners | Follow Along", "N_HstpxHnTA", "23:28", "FightCamp", "Beginner"],
+          ["Workout 1 | 15 Minute Ultimate Beginner Home Workout", "CUjV6LCAlvs", "18:48", "The Body Coach TV", "Beginner"],
+          ["Workout 2 | 15 Minute Ultimate Beginner Home Workout", "Yqntd4rmUZQ", "18:32", "The Body Coach TV", "Beginner"],
+          ["Workout 3 | 15 Minute Ultimate Beginner Home Workout", "nGHEhnPh5lA", "18:28", "The Body Coach TV", "Beginner"],
+          ["Workout 4 | 15 Minute Ultimate Beginner Home Workout", "KNhBdh7rAzQ", "18:34", "The Body Coach TV", "Beginner"]
+        ]},
+        { category: "Yoga", tone: "blue", videos: [
+          ["20 Minute Beginners Yoga | Yoga with Lucy", "iUKd8bbgCqw", "23:36", "The Body Coach TV", "Beginner"],
+          ["The Basics of Yoga | Yoga for Beginners", "BRmlJ4HWlxo", "15:34", "The Body Coach TV", "Beginner"],
+          ["Hip Opening Flow | Yoga for Beginners", "1Bq56-x3poE", "16:43", "The Body Coach TV", "Beginner"],
+          ["Hamstring Stretch Flow | Yoga for Beginners", "tVmKjvV-tY0", "14:51", "The Body Coach TV", "Beginner"],
+          ["Mind and Body Flow | Yoga for Beginners", "7ltphXHUIH8", "15:04", "The Body Coach TV", "Beginner"],
+          ["Twist-Focused Flow | Yoga for Beginners", "zYuqGDIx4Lk", "14:44", "The Body Coach TV", "Beginner"],
+          ["Heart Opening Flow | Yoga for Beginners", "IetE0mwtVNg", "15:23", "The Body Coach TV", "Beginner"],
+          ["Creative Flow | Yoga for Beginners", "ZtbJJ3kqWLw", "14:45", "The Body Coach TV", "Beginner"]
+        ]},
+        { category: "Flexibility and mobility", tone: "blue", videos: [
+          ["Foam Rolling For Recovery | Follow Along Routine", "zUu0zs9WeSg", "7:14", "FightCamp", "All levels"],
+          ["Flexibility and Mobility Workout", "nFo5dOhlYUw", "20:55", "TheLeanMachines", "All levels"],
+          ["Beginners Stretching and Flexibility Routine", "21xCQ4VtEL0", "16:18", "TheLeanMachines", "Beginner"],
+          ["Flexibility and Mobility Routine | Upper Body", "pLnI4b3QSgM", "15:13", "TheLeanMachines", "All levels"],
+          ["24 Minute Total Body Foam Rolling Routine", "mpr9IVfrpgg", "25:31", "FightCamp", "All levels"],
+          ["10 Minute Mobility Core Workout", "JTW2NW0WPKM", "12:06", "FightCamp", "All levels"],
+          ["Flexibility and Kicking Full-Length Workout", "4Vjgt4cPtls", "24:34", "FightCamp", "All levels"],
+          ["How to increase flexibility and mobility", "-shl9EgjQdI", "13:16", "TheLeanMachines", "All levels"],
+          ["Flexibility and Mobility For Weightlifting", "nsAmvXgz-Os", "22:42", "TheLeanMachines", "All levels"],
+          ["How To Fix Your Bad Posture", "rNXBDOafJm8", "9:09", "TheLeanMachines", "All levels"],
+          ["Lower Body Stretching Routine", "0eqPHe1r5t8", "24:42", "TheLeanMachines", "All levels"]
+        ]},
+        { category: "Meditation and mindfulness", tone: "green", videos: [
+          ["10-Minute Meditation To Start Your Day", "ENYYb5vIMkU", "10:18", "Goodful", "All levels"],
+          ["Daily Calm | Be Present", "ZToicYcHIOU", "10:30", "Calm", "All levels"],
+          ["10-Minute Meditation For Stress", "z6X5oEIg6Ak", "10:18", "Goodful", "All levels"],
+          ["10-Minute Meditation to Reframe Stress", "sG7DBA-mgFY", "10:10", "Headspace", "All levels"],
+          ["10-Minute Meditation For Depression", "xRxT9cOKiM8", "10:19", "Goodful", "All levels"],
+          ["Daily Calm | Santosha", "5vI8Kh3-epg", "11:17", "Calm", "All levels"],
+          ["10-Minute Meditation For Sleep", "aEqlQvczMJQ", "10:02", "Goodful", "All levels"],
+          ["Reset | Decompress Your Body and Mind", "QHkXvPq2pQE", "10:08", "Headspace", "All levels"],
+          ["10 Minute Guided Meditation for Focus", "ausxoXBrmWs", "10:41", "Declutter The Mind", "All levels"]
+        ]},
+        { category: "HIIT and cardio", tone: "red", videos: [
+          ["10 Min Fat Burning Workout | No Equipment", "UheajlsZ72E", "13:00", "THENX", "All levels"],
+          ["Full Body Fat Burning Workout | 20 Minutes", "8VoV5w4Ea3A", "20:35", "The Body Coach TV", "All levels"],
+          ["Complete 12 Min Fat Burning Workout", "EhY6cGS7F-c", "14:51", "THENX", "All levels"],
+          ["20 Minute Fat Burning Bodyweight Workout", "F-I57N-hsMA", "21:11", "The Body Coach TV", "All levels"],
+          ["15 Minute Medicine Ball HIIT Workout", "s7LwfKnjxto", "17:13", "Juice and Toya", "All levels"],
+          ["10 Minute Cardio and Abs Workout", "urkqbwo6C3c", "10:50", "The Body Coach TV", "All levels"],
+          ["16 Minute Fat Burning Home Workout", "O4bBD6nq6KQ", "18:38", "The Body Coach TV", "All levels"],
+          ["20 Minute Fat Burning Workout | HIIT", "wBurKQX7h4Q", "20:39", "Global Cycling Network", "All levels"],
+          ["Legs and Glute Burning HIIT", "uWaTXQwJWCs", "22:27", "The Body Coach TV", "All levels"],
+          ["20 Minute Full Body HIIT Workout", "GLWgVmlBPiA", "21:48", "FightCamp", "All levels"],
+          ["10-Minute HIIT MMA Workout", "YXyaIHBTHRI", "10:17", "FightCamp", "All levels"],
+          ["Foam Roller Cardio Workout", "BXl1ywp_llw", "6:36", "FightCamp", "All levels"]
+        ]},
+        { category: "Indoor cycling", tone: "orange", videos: [
+          ["20 Minute Indoor Cycling Workout | Cardio Strength", "9MqdWAf4Q3c", "21:32", "RI:ID", "All levels"],
+          ["15 Minute HIIT Cardio Indoor Cycling Workout", "Pln_nGVk7Js", "15:08", "GCN Training", "All levels"],
+          ["20 Min Cardio | Spin Bike Workout", "ndh2LxWvwTc", "20:05", "GCN Training", "All levels"],
+          ["HIIT Indoor Cycling Workout | 30 Minute Intervals", "ZiGE3-L4vyg", "30:00", "Global Cycling Network", "All levels"],
+          ["Full Body Cardio Workout | Not Running or Cycling", "b-vUNkH4RzQ", "23:05", "FightCamp", "All levels"]
+        ]},
+        { category: "Strength and resistance", tone: "red", videos: [
+          ["Home Workout For Beginners | Dumbbells Only", "2fCKd-BQOhw", "11:28", "THENX", "Beginner"],
+          ["Complete Chest and Shoulder Home Workout", "M55Oq0hd3FQ", "12:54", "Chris Heria", "All levels"],
+          ["Complete Biceps and Triceps Workout", "lBy-7EFK30o", "12:28", "THENX", "All levels"],
+          ["Complete Chest Workout | Push-ups and Dumbbells", "wvF3fk3RLo8", "13:41", "THENX", "All levels"],
+          ["Upper Body Workout With Dumbbells", "K9s8bRd4Fxw", "16:56", "The Body Coach TV", "All levels"],
+          ["15 Minute Dumbbell Hell", "eyFkF6PMhCk", "16:59", "The Body Coach TV", "Advanced"],
+          ["20 Minute Upper Body Dumbbell Drop Sets", "yPg4Fq16tJU", "20:05", "The Body Coach TV", "All levels"],
+          ["12 Minute Upper-Body and Core Workout", "m61-Q-NIML8", "13:26", "The Body Coach TV", "All levels"],
+          ["30 Minute Boxing and Weights Workout", "aYFxshPB2bM", "28:59", "FightCamp", "All levels"],
+          ["15 Min Compound Leg Workout with Dumbbells", "r78WzW27-UI", "20:06", "TIFF x DAN", "All levels"],
+          ["Dumbbell Strength Workout", "2cJXpPoGUbU", "21:22", "The Body Coach TV", "All levels"],
+          ["20 Minute Full Body Home Workout with Dumbbells", "-h2d2B0VdSw", "20:13", "The Body Coach TV", "All levels"],
+          ["30 Minute Energizing Dumbbell HIIT Workout", "zHJACKlf-Jc", "31:07", "The Body Coach TV", "All levels"],
+          ["35 Minute Home Dumbbell Workout", "z3KYIe5ptQw", "35:00", "The Body Coach TV", "All levels"],
+          ["25 Minute Full Body Home Dumbbell Workout", "JwzQnJTfTGw", "25:34", "The Body Coach TV", "All levels"],
+          ["20 Minute Intense Dumbbell Shoulder Blast", "ijD70_7vR4w", "21:01", "The Body Coach TV", "All levels"],
+          ["Full Body Workout With Weights", "S2iE_Cq1MtA", "20:30", "The Body Coach TV", "All levels"],
+          ["20 Minute Full Body Dumbbell Pyramid Workout", "s-pjBopj2wk", "20:00", "The Body Coach TV", "All levels"]
+        ]},
+        { category: "Legs, glutes and core", tone: "orange", videos: [
+          ["Savage 10 Minute Leg Burner", "5cAh3m5HCpw", "10:51", "The Body Coach TV", "Advanced"],
+          ["15 Minute Leg Burner", "Txindp8nosc", "16:55", "The Body Coach TV", "All levels"],
+          ["20 Minute Legs, Bums and Tums", "T5ApFjVOFfI", "21:15", "The Body Coach TV", "All levels"],
+          ["12 Minute Leg Burner", "vzNUH11jGLA", "12:31", "The Body Coach TV", "All levels"],
+          ["Legs and Glutes Dumbbell Workout", "JCU0VHEX5UU", "13:18", "The Body Coach TV", "All levels"],
+          ["20 Minute Legs, Bums and Tums Workout", "sjKfIvxdUp0", "21:20", "The Body Coach TV", "All levels"],
+          ["15 Minutes 15 Moves | Leg Burning Workout", "CqV5wI3NQOg", "16:24", "The Body Coach TV", "All levels"],
+          ["15 Minute Leg Burner", "d-bA4qHWnL0", "16:05", "The Body Coach TV", "All levels"],
+          ["Quick 10 Minute Legs, Bums and Tums Workout", "tPv-8HBr8K0", "11:08", "The Body Coach TV", "All levels"],
+          ["25 Minute Legs and Bum Workout", "YkwMW1tfeoc", "25:33", "The Body Coach TV", "All levels"],
+          ["20 Minute Legs and Glutes Dumbbell Workout", "0hJDUWHG02M", "20:02", "The Body Coach TV", "All levels"],
+          ["12 Minute Core and Abs Workout", "LF9L8anE1G8", "12:57", "The Body Coach TV", "All levels"],
+          ["10 Minute Abs and Core Workout", "jzUpDjTBn7s", "11:01", "The Body Coach TV", "All levels"],
+          ["Abs in 7 Minutes", "3sEeVJxKJpE", "7:28", "The Body Coach TV", "All levels"],
+          ["15 Minute Leg and Glute HIIT Home Workout", "gp8bX7Xw6Gk", "16:31", "The Body Coach TV", "All levels"],
+          ["Lower Body and Abs Dumbbell Workout", "LNxmfy4ZukA", "20:06", "The Body Coach TV", "All levels"]
+        ]},
+        { category: "Boxing and kickboxing", tone: "red", videos: [
+          ["25-Minute Rumble No-Equipment Cardio-Boxing Workout", "sgwtp9mF8tI", "25:39", "PS Fit", "All levels"],
+          ["10 Minute Boxing Workout | Resistance Band Training", "k_YS-L4J_8I", "12:41", "FightCamp", "All levels"],
+          ["Boxing Core Workout Inspired by Manny Pacquiao", "5-8IFt6vauc", "7:05", "FightCamp", "All levels"],
+          ["10 Minute Medicine Ball Workout | Boxing Training", "DrBwtGqCoco", "12:52", "FightCamp", "All levels"],
+          ["20-Minute Beginner Boxing Heavy Bag Workout", "CuCrHHvTZsE", "24:00", "FightCamp", "Beginner"],
+          ["4 Round Boxing Workout At-Home", "Cx6JfrRO4eA", "23:36", "FightCamp", "All levels"],
+          ["10 Minute Heavy Bag Workout | 720 Punches", "HgoQDCv0Aog", "11:59", "NateBowerFitness", "All levels"],
+          ["4 Round Punching Bag Workout for Beginners", "wIKrLzBAf84", "21:48", "FightCamp", "Beginner"],
+          ["Beginner Boxing Workout | Fat-Burning Routine", "Y5NtN0YYykc", "21:45", "FightCamp", "Beginner"],
+          ["Ultimate 20 Minute Heavy Bag Workout", "QnpmH5NP1kE", "21:36", "NateBowerFitness", "All levels"],
+          ["25 Minute Punching Bag Boxing Workout", "9aYD0npgWxk", "31:09", "FightCamp", "Beginner"],
+          ["Ultimate 4-Round Boxing Training", "saQV33RIC20", "23:42", "FightCamp", "All levels"],
+          ["20-Minute Boxing Bag Workout | Fat Burner", "kD7EfItFkZk", "23:02", "FightCamp", "All levels"],
+          ["20-Minute Boxing Heavy Bag HIIT Workout", "Gy5nGxkQ6kU", "24:02", "FightCamp", "All levels"],
+          ["25-Minute Follow-Along Heavy Bag Workout", "wDH2iJwK6Uw", "32:42", "FightCamp", "All levels"],
+          ["20 Minute Boxing Workout | Level Up Your Boxing", "Vqn8BpqwuLQ", "24:36", "FightCamp", "All levels"],
+          ["20 Minute Boxing Bag Workout | Punches and Footwork", "30vRnjTkq5U", "23:08", "FightCamp", "All levels"],
+          ["15 Minute Follow Along Boxing Workout", "yUp5450cEyo", "20:47", "FightCamp", "All levels"],
+          ["20 Min Advanced Punching Bag Workout", "XRR_Wrs-eTM", "21:58", "FightCamp", "Advanced"],
+          ["20 Minute Punching Bag Boxing Workout", "KuYpr5-M2BA", "21:19", "NateBowerFitness", "Advanced"],
+          ["20 Min Easy To Follow Boxing Workout", "Fe96nd6S6cQ", "22:16", "FightCamp", "All levels"],
+          ["30 Minute Cardio Boxing Bag Workout", "J_932kM4pwg", "31:10", "FightCamp", "All levels"],
+          ["Cardio Boxing | 15 Minute Bag Workout", "IVvOmoB88FM", "24:35", "FightCamp", "All levels"],
+          ["20 Min Cardio Boxing Class", "Biu8g_O__4c", "22:35", "FightCamp", "All levels"],
+          ["Quick Home Boxing Workout", "h1NtoP55D-Q", "21:53", "FightCamp", "All levels"],
+          ["15 Minute Holiday Boxing Burn", "a2q4SeQqTPU", "20:47", "FightCamp", "All levels"],
+          ["25 Minute Boxing Workout At Home", "ZOSiBkZNKsA", "31:10", "FightCamp", "All levels"],
+          ["10 Minute Heavy Bag Workout", "1vwN_r20bHU", "10:51", "FightCamp", "All levels"],
+          ["Boxing for Beginners | Punching Form", "ZjXPL8oB1Ys", "21:07", "FightCamp", "Beginner"],
+          ["20 Minute Cardio Kickboxing Workout", "MirQq7_W3jE", "21:08", "FightCamp", "All levels"]
+        ]},
+        { category: "General fitness", tone: "green", videos: [
+          ["Learn How To Kick Like Stephen Thompson", "NZ7B8zBrB_I", "20:48", "FightCamp", "All levels"],
+          ["25 Min Full Body Resistance Band Workout", "T5f6wu_7s_8", "25:29", "TIFF x DAN", "All levels"],
+          ["Resistance Band Activation Warmup", "Ha-YBfxoxeE", "2:49", "FightCamp", "All levels"],
+          ["20 Minute Bodyweight Strength and Conditioning Workout", "SSqUPfYB9iw", "20:25", "FightCamp", "All levels"],
+          ["Core Activation Warmup", "fJK76sR8-k0", "2:51", "FightCamp", "All levels"],
+          ["Upper Body Activation Warmup", "Bd4q1laz1r8", "2:51", "FightCamp", "All levels"],
+          ["Lower Body Activation Warmup", "mT0iAMMCpGA", "2:51", "FightCamp", "All levels"]
+        ]}
+      ];
+
+      const state = {
+        category: "All",
+        query: "",
+        device: "iphone"
+      };
+
+      let lastFocusedElement = null;
+
+      const categoryList = document.getElementById("categoryList");
+      const videoGrid = document.getElementById("videoGrid");
+      const emptyState = document.getElementById("emptyState");
+      const search = document.getElementById("videoSearch");
+      const searchClear = document.getElementById("searchClear");
+      const searchStatus = document.getElementById("searchStatus");
+      const modal = document.getElementById("youtubeModal");
+      const themeToggle = document.querySelector("[data-theme-toggle]");
+
+      function getFavorites() {
+        try {
+          return JSON.parse(localStorage.getItem("myFitnessFavorites") || "[]");
+        } catch (e) {
+          return [];
+        }
+      }
+
+      function saveFavorites(favs) {
+        try {
+          localStorage.setItem("myFitnessFavorites", JSON.stringify(favs));
+        } catch (e) {}
+      }
+
+      function toggleFavorite(id) {
+        let favs = getFavorites();
+        if (favs.includes(id)) {
+          favs = favs.filter(f => f !== id);
+        } else {
+          favs.push(id);
+        }
+        saveFavorites(favs);
+        renderCategories();
+        renderVideos();
+      }
+
+      function allVideos() {
+        return DATA.flatMap(group => group.videos.map(video => ({
+          category: group.category,
+          tone: group.tone,
+          title: video[0],
+          id: video[1],
+          duration: video[2],
+          channel: video[3],
+          level: video[4]
+        })));
+      }
+
+      function escapeHtml(value) {
+        return String(value).replace(/[&<>"']/g, char => ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#039;"
+        }[char]));
+      }
+
+      function renderCategories() {
+        const total = allVideos().length;
+        const favCount = getFavorites().length;
+
+        const groups = [
+          { category: "All", count: total },
+          { category: "Favorites", count: favCount },
+          ...DATA.map(group => ({
+            category: group.category,
+            count: group.videos.length
+          }))
+        ];
+
+        categoryList.innerHTML = groups.map(group => `
+          <button class="category-button ${group.category === state.category ? "is-active" : ""}" 
+                  type="button" 
+                  role="tab"
+                  aria-selected="${group.category === state.category}"
+                  data-category="${escapeHtml(group.category)}">
+            <span>${escapeHtml(group.category)}</span>
+            <span>${group.count}</span>
+          </button>
+        `).join("");
+
+        document.getElementById("metricVideos").textContent = String(total);
+      }
+
+      function filteredVideos() {
+        const query = state.query.trim().toLowerCase();
+        const favs = getFavorites();
+
+        return allVideos().filter(video => {
+          let inCategory = false;
+          if (state.category === "All") inCategory = true;
+          else if (state.category === "Favorites") inCategory = favs.includes(video.id);
+          else inCategory = video.category === state.category;
+
+          const haystack = `${video.title} ${video.channel} ${video.level} ${video.category}`.toLowerCase();
+          return inCategory && (!query || haystack.includes(query));
+        });
+      }
+
+      // Smart 2-Stage Thumbnail Loader
+      function attachThumbHandlers(cardWrap, img, videoId) {
+        let stage = 0; // 0 = maxresdefault, 1 = hqdefault
+
+        img.onerror = () => {
+          if (stage === 0) {
+            stage = 1;
+            img.src = `https://i.ytimg.com/vi/${encodeURIComponent(videoId)}/hqdefault.jpg`;
+          } else {
+            cardWrap.remove();
+          }
+        };
+
+        img.onload = () => {
+          if (img.naturalWidth === 120) {
+            if (stage === 0) {
+              stage = 1;
+              img.src = `https://i.ytimg.com/vi/${encodeURIComponent(videoId)}/hqdefault.jpg`;
+            } else {
+              cardWrap.remove();
+            }
+          }
+        };
+      }
+
+      function renderVideos() {
+        const videos = filteredVideos();
+        const favs = getFavorites();
+
+        videoGrid.innerHTML = videos.map(video => {
+          const isFav = favs.includes(video.id);
+          return `
+            <div class="video-card-wrap" data-wrap-id="${escapeHtml(video.id)}">
+              <button class="fav-btn ${isFav ? "is-fav" : ""}" 
+                      type="button" 
+                      data-fav-id="${escapeHtml(video.id)}"
+                      aria-label="${isFav ? "Remove from favorites" : "Save to favorites"}">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="${isFav ? "currentColor" : "none"}" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.78-8.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+              </button>
+              <a class="video-card" href="https://youtu.be/${encodeURIComponent(video.id)}" target="_blank" rel="noopener noreferrer" data-tone="${escapeHtml(video.tone)}">
+                <span class="thumb">
+                  <img src="https://i.ytimg.com/vi/${encodeURIComponent(video.id)}/maxresdefault.jpg" 
+                       alt="${escapeHtml(video.title)} thumbnail" loading="lazy">
+                  <span class="duration">${escapeHtml(video.duration)}</span>
+                </span>
+                <span class="video-body">
+                  <span class="tag">${escapeHtml(video.category)}</span>
+                  <strong class="video-title">${escapeHtml(video.title)}</strong>
+                  <span class="video-meta"><span>${escapeHtml(video.channel)}</span><span>${escapeHtml(video.level)}</span></span>
+                </span>
+              </a>
+            </div>
+          `;
+        }).join("");
+
+        // Attach dynamic image error/load observers
+        videoGrid.querySelectorAll(".video-card-wrap").forEach(wrap => {
+          const img = wrap.querySelector("img");
+          const videoId = wrap.dataset.wrapId;
+          if (img && videoId) {
+            attachThumbHandlers(wrap, img, videoId);
+          }
+        });
+
+        emptyState.classList.toggle("is-visible", videos.length === 0);
+
+        // Update search status message
+        if (state.query.trim()) {
+          searchStatus.textContent = `Found ${videos.length} video${videos.length === 1 ? "" : "s"}`;
+        } else {
+          searchStatus.textContent = "";
+        }
+
+        searchClear.hidden = !state.query.length;
+      }
+
+      function setCategory(category) {
+        state.category = category;
+        renderCategories();
+        renderVideos();
+      }
+
+      function setDevice(device) {
+        state.device = device;
+        document.body.dataset.device = device;
+        document.querySelectorAll("[data-device-target]").forEach(button => {
+          const isActive = button.dataset.deviceTarget === device;
+          button.classList.toggle("is-active", isActive);
+          button.setAttribute("aria-pressed", String(isActive));
+        });
+
+        document.querySelectorAll("[data-ios], [data-android], [data-mac]").forEach(link => {
+          const web = link.dataset.web || link.href;
+          const ios = link.dataset.ios;
+          const android = link.dataset.android;
+          const mac = link.dataset.mac;
+          let target = web;
+          if (device === "iphone" && ios) target = ios;
+          if (device === "android" && android) target = android;
+          if (device === "mac" && mac) target = mac;
+          link.href = target;
+        });
+      }
+
+      function setTheme(theme) {
+        const normalized = theme === "dark" ? "dark" : "light";
+        document.documentElement.dataset.theme = normalized;
+        document.querySelector('meta[name="theme-color"]').setAttribute("content", normalized === "dark" ? "#11110f" : "#f6f4ef");
+        if (themeToggle) {
+          themeToggle.textContent = normalized === "dark" ? "Light" : "Dark";
+          themeToggle.setAttribute("aria-pressed", String(normalized === "dark"));
+        }
+        try {
+          localStorage.setItem("myFitnessTheme", normalized);
+        } catch (error) {}
+      }
+
+      function getFocusableElements(container) {
+        return Array.from(container.querySelectorAll(
+          'a[href], button:not([disabled]), textarea:not([disabled]), input[type="text"]:not([disabled]), input[type="search"]:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        ));
+      }
+
+      function openYoutubeModal() {
+        lastFocusedElement = document.activeElement;
+        modal.classList.add("is-open");
+        modal.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+
+        const focusables = getFocusableElements(modal);
+        if (focusables.length > 0) focusables[0].focus();
+      }
+
+      function closeYoutubeModal() {
+        modal.classList.remove("is-open");
+        modal.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+
+        if (lastFocusedElement && typeof lastFocusedElement.focus === "function") {
+          lastFocusedElement.focus();
+        }
+      }
+
+      // Event Listeners
+      categoryList.addEventListener("click", event => {
+        const button = event.target.closest("[data-category]");
+        if (!button) return;
+        setCategory(button.dataset.category);
+      });
+
+      videoGrid.addEventListener("click", event => {
+        const favBtn = event.target.closest("[data-fav-id]");
+        if (favBtn) {
+          event.preventDefault();
+          event.stopPropagation();
+          toggleFavorite(favBtn.dataset.favId);
+        }
+      });
+
+      search.addEventListener("input", event => {
+        state.query = event.target.value;
+        renderVideos();
+      });
+
+      searchClear.addEventListener("click", () => {
+        search.value = "";
+        state.query = "";
+        renderVideos();
+        search.focus();
+      });
+
+      document.querySelectorAll("[data-device-target]").forEach(button => {
+        button.addEventListener("click", () => setDevice(button.dataset.deviceTarget));
+      });
+
+      if (themeToggle) {
+        themeToggle.addEventListener("click", () => {
+          setTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark");
+        });
+      }
+
+      document.querySelectorAll("[data-open-youtube]").forEach(trigger => {
+        trigger.addEventListener("click", openYoutubeModal);
+      });
+
+      document.querySelectorAll("[data-close-youtube]").forEach(trigger => {
+        trigger.addEventListener("click", closeYoutubeModal);
+      });
+
+      document.querySelectorAll("[data-category-jump]").forEach(trigger => {
+        trigger.addEventListener("click", () => {
+          setCategory(trigger.dataset.categoryJump);
+          document.getElementById("library").scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      });
+
+      // Trap focus inside YouTube modal dialog when open
+      modal.addEventListener("keydown", event => {
+        if (event.key === "Tab") {
+          const focusables = getFocusableElements(modal);
+          if (focusables.length === 0) return;
+          const first = focusables[0];
+          const last = focusables[focusables.length - 1];
+          if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last.focus();
+          } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first.focus();
+          }
+        }
+      });
+
+      // Global Keyboard Shortcuts
+      document.addEventListener("keydown", event => {
+        if (event.key === "Escape") {
+          if (modal.classList.contains("is-open")) {
+            closeYoutubeModal();
+          } else if (document.activeElement === search) {
+            search.value = "";
+            state.query = "";
+            renderVideos();
+            search.blur();
+          }
+        } else if ((event.key === "/" || ((event.metaKey || event.ctrlKey) && event.key === "k")) && document.activeElement !== search && !modal.classList.contains("is-open")) {
+          event.preventDefault();
+          search.focus();
+          search.select();
+        }
+      });
+
+      // Initialization
+      renderCategories();
+      renderVideos();
+      try {
+        const currentTheme = document.documentElement.dataset.theme || "light";
+        setTheme(currentTheme);
+      } catch (error) {
+        setTheme("light");
+      }
+      setDevice(/Android/i.test(navigator.userAgent) ? "android" : /Mac/i.test(navigator.userAgent) ? "mac" : "iphone");
+    })();
+  </script>
+</body>
+</html>
+```
+
+</details>
 
 ---
 
