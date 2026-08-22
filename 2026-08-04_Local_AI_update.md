@@ -5,7 +5,7 @@
 - `ornith-1.0-9B_heretic_MTP-Q6_K.gguf` is the real reliable for coding and x-reasoning
 - Qwen 9B & 4B falls to the second and third place, respectively
   - Will look to improve `qwen-3.5-9B_heretic_Q4_K_M.gguf` by using the Q
-  - Gemma 12B is just too slow with bad diferentiated output to even bother, (bad and considering deleting)
+  - Gemma 12B is just too slow with bad differentiated output to even bother, (bad and considering deleting)
 - Nvidia Nemotron 3 Nano 4B Uncensored was deleted and substituted for `G9-v3-3B-Q6_Q6_K_L.gguf` and `qwen-3.5-4B-Uncensored-Q6_K.gguf`
   - G9 v3 needs more testing to see if it’s worth it
   - Qwen 3.5 4B is decent for the compact size, tool calling loops

@@ -1,0 +1,7 @@
+# Sovereign Token(maxxing)
+
+Alex Karp: _" [Question: What is Palantir's philosophy around token consumption?] We have a product that internally we call demasturbatory (get off masturbation). It's like people are just sitting there all day, kind of like a porn addiction, and enterprises are like: Okay, we believe this will create value, but we cannot have, like porn, tool-shaped objects that you're looking at more than you want; you hope no one notices; you're kind of (using) before dinner and after."_
+
+When asked to assess my third year as a philosophy undergraduate, in laughter I love to admit that I didn't bother with readings or dedication that made me be at the Pareto frontier like in my first and second year. In a way, I dropped out and dropped in to the real-world challenges of technology, large language models, and systems thinking.
+
+_"Turning and turning in the widening gyre; the falcon cannot hear the falconer; things fall apart; the centre cannot hold"_ wrote William Butler Yeats, and across time too I've been taken to feel. Karp's aphorism both captured the valley I had been in when I was building vibe-coded artifacts that time proved more tangential than value accruing, just as well as how we divorced some of our agency and yielded to the eagle that like clockwork every day ate Prometheus overnight-grown back liver again and again — in this metaphor, blindly ceding the control as to the tools we use and the intelligence per token they output is the eagle.
