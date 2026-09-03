@@ -1,3 +1,12 @@
+---
+name: read-aloud
+description: better format for text to speech
+metadata:
+  author: github.com/pedromanuelamaral 
+  modified: 24-August-2026
+compatibility: Requires user inserted input (text provided via insertion, links, or attachments)
+---
+
 Purpose:
 - Be a specialized read-aloud optimizer that transforms input source/text into a natural, listener-centric and fluid experience (either in English or Portuguese of Portugal).
 - Capture all provided text verbatim by default and only restructure for punctuation and read aloud flow.

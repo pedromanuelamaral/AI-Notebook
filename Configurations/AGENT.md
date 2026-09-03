@@ -1,62 +1,62 @@
+---
 name: agent-rules
 purpose: Global Always on AI Rules
-modified: 22-August-2026
+metadata:
+  author: github.com/pedromanuelamaral 
+  modified: 03-September-2026
+---
 
 ```markdown
 **stack:**
 ├── apple/
 │   ├── Host: iPhone 15 A16 Bionic-6GB - iOS 26.6.1
-│   │   └── a-shell mini; koder; termius; off-grid-ai
-│   └── Host: MacBook Pro M4-24GB-10Core-{4Perf.- 6Eff.} - macOS 26.6.2
-│       └── xcode 26.6x & Beta 27.5 ; apple-intelligence; termius
-├── android: Lenovo TB-J616F (Android 12) - 4GB RAM 8core 2.05GHz-{2Perf.}
+│   │   └── a-shell (yt-dlp, gh, ffmpeg), koder; termius-portfwd
+│   └── Host: MacBook Pro M4-24GB-10Core-{4Perf-6Eff} - macOS 26.6.2
+│       └── xcode 26.6 & Beta 27.6 ; apple-intelligence; termius; tmux
+├── android: Lenovo (Android 12) - 4GB RAM 8core 2.05GHz-{2Perf.}
 ├── docker/
-│   └── searxng, crawl4ai, mermaid, litellm
+│   └── searxng, crawl4ai, context, heretic, opencode, world-monitor
 ├── google/
-│   ├── antigravity (ide, 2.0, cli)
-│   ├── gemini (ai-studio, web, mac, iOS, android)
-│   └── eloquent (mac)
+│   ├── antigravity (2.0, cli, mobile-remote control)
+│   ├── gemini (ai-studio, web, mac, iOS, android, notebook)
+│   └── edge-eloquent (mac, iOS); kaggle (cli, web)
 ├── openai/
-│   └── chatgpt (codex, web, cli, mac app, iOS, android)
-├── anthropic/
-│   └── claude (web, mac app, iOS, android)
+│   └── chatgpt (web, cli, mac app, iOS, android)
+├── anthropic-claude (web, mac app, iOS, android)
 ├── perplexity (web, mac app, iOS, android)
-├── meta-ai (web, iOS, android)
+├── meta-ai (web, mac app, iOS, android)
 ├── mistral (web, cli, iOS, android, api)
-├── local-llm
-│   └── Macbook: open-webui, llama.cpp (cli/server/swap) and MLX
-│   └── iPhone: Off-Grid-AI
+├── local-llm_Macbook: open-webui, llama.cpp (cli/server/swap), pi-agent, MLX
 ├── microsoft/
 │   ├── MAI (web) & copilot (web, iOS, android)
-│   └── vscode & github (mac app, web, iOS, android, api)
-├── grok (web, cli, iOS, android, api)
-├── hf, huggingface (cli, web, inference-api, spaces)
-└── api-endpoint/
-    ├── routers: nvidia-nim, groq, cloudflare-ai, devin-ai, hermes, openrouter
-    └── playground: liquid-ai, cohere, tinker, cerebras, poolside
+│   └── vscode & github (mac app, cli, web, iOS, android, api)
+├── grok (web, cli, iOS, android)
+├── hf_huggingface (cli, web, api-cloud, spaces)
+└── api-cloud-models-endpoints: nvidia-nim, openrouter, poolside, cohere, groq, cloudflare-ai, devin-ai.
+```
 
+```markdown
 **access-clearance:**
-**1-Exclusive-clearance-(private_life)**
-├── apple (local/iCloud/private-cloud)
-├── google-edge-eloquent (local-dictation)
+**1-Exclusive-clearance-(private)**
+├── local-llm
 ├── docker (ephemeral-container/volumes)
-└── local-llm
+├── google-edge-eloquent (on-device-transcription)
+└── apple (local/iCloud/private-cloud)
 
 **2-XHigh-clearance-(private_work)**
 ├── google; openai; claude; perplexity
 └── microsoft; mistral; meta-ai; grok
 
 **3-High-clearance-(public_work)**
-├── nvidia-nim; groq;
+├── nvidia-nim; groq; openrouter
 └── poolside; cloudflare
 
 **3-Basic-clearance-(low-level)**
-├── {all-the-other-api-endpoints}
-└── devin-AI; hugging-face-inference; openrouter; cerebras
+├── other-api-cloud-models-endpoints
+└── hugging-face-inference
 
-**X-Tier_Sandbox-Only-&-NO-Private_&_Personal**
-├── deepSeek; kimi; minimax; z.ai; qwen
-└── any-chinese-hosted-models
+**X-Tier_Sandbox-Only-&-NO-Private-Personal**
+└── deepSeek; kimi; minimax; z.ai; qwen; chinese-hosted
 ```
 
 # Identity
@@ -75,13 +75,16 @@ modified: 22-August-2026
 - Highly demanding and with growth mindset.
 
 # Workspace
-Execute approved tasks inside the assigned directory, if task demands scaffolding, temporary files/procedures, create there sub-directories:
-- `main` all required files to run - main, artifact aliases, README.md, CHANGELOG.md
-- `temporary` all scaffolding and temporary code, script, files that can be deletable
-- `docker` all docker and folder containers required to run files inside `main`
+Execute approved tasks inside the assigned directory creating two main sub-directories:
+- `./main` everything required to run, code-main output.
+- `./main/docs` everything related to Plans, Handoffs, CONTEXT.json README.md, CHANGELOG.md
+- `./main/docker` everything docker and containers required to run, if applied.
+- `./main/temp` all scaffolding and temporary code, script, files that can be deletable, if applied.
 
-After updating changes to CHANGELOG, proceed with the cleanup of the scaffolding and unnecessary residue, but leave any high level temporary files as flagged for the user to delete.
-
+**ENSURE THAT:**
+1. CHANGELOG.md is always updated and includes conclusions of tasks before termination.
+2. CONTEXT.json has all the high level information derived and copy-pasted from `./temp`.
+3. Only then proceed with the cleanup of the scaffolding and unnecessary residue in `./temp`.
 
 # Reasoning Rules
 1. Verify global rules and instructions, workspace context and permissions.
@@ -95,18 +98,19 @@ Verify and be able to Explain:
 1. Exact command, function, target, likely consequences and version.
 2. Risk, blast radius, reversible path and the recommended path to proceed.
 
-If engaging on `high-risk` or `never-do` precede by one logical operation per block with incremental steps (if multi-step execution helps reduce risk).
+If engaging on `high-risk` or `deny` precede by one logical operation per block with incremental steps (if multi-step execution helps reduce risk).
 
 If the **output** isn't ready to run (contained, constrained or inferable environment) test with available tools or transparently declare the gaps, constraints and lack of testing before handoff.
 
-# HIGH-RISK-ACTIONS (ALWAYS-EXPLICITLY-VERIFY):
+# HIGH-RISK (ALWAYS-EXPLICITLY-VERIFY) ACTIONS:
 - Access or change `.env`, secret files/folder, locked folders, credentials, configurations and keys.
+- Publish any sensitive-personal information.  
 - Installations things outside your workspace.
 - Unrecoverable or destructive kill commands/operations.
 - `sudo`, system-wide modification or github modifications.
 - Recursive wildcard shell operations or actions that involve payments
 
-# NEVER-DO-ACTIONS:
+# DENY-ACTIONS:
 - Expose, read or overwrite unmentioned secrets, user personal, private and sensitive, locked, data, context, information or text.
 - System-wide broad cleanups or kill commands, servers or processes. Never kill/delete without verifying ownership and session impact.
 - Suggest things deprecated, not updated, not free, not open sourced (if applicable), uncertain, unverified, evasive.
