@@ -1,4 +1,4 @@
-name: Deploy arta to GitHub Pages
+name: Deploy to GitHub Pages
 
 on:
   push:
@@ -27,10 +27,14 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
+      # Creates index.html in the runner so the root URL loads your file instead of a 404
+      - name: Set default page
+        run: cp 2026-06-29_Cerebras-Hackathon.html index.html
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '2026-06-29_Cerebras-Hackathon.html'
+          path: '.'
 
       - name: Deploy to GitHub Pages
         id: deployment
