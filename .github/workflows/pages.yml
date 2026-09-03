@@ -30,7 +30,7 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'Hackathon.html'
+          path: '2026-06-29_Cerebras-Hackathon.html'
 
       - name: Deploy to GitHub Pages
         id: deployment
