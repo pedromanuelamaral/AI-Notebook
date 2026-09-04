@@ -1,5 +1,5 @@
 
-# Speed, But at What Cost?
+# Speed, but at What Cost?
 
 **Hardware**
 - `MacBook Pro M4-24GB-10Core`
@@ -8,7 +8,7 @@
 
 ## Quick Thoughts
 
-Everyone is racing on inference and generation speed right now — the proprietary side (ChatGPT's Ultrafast mode, Gemini 3.7) and, more palpably, the open-source side with tiny sub-5B parameter models.
+Everyone is racing on inference and generation speed right now — the proprietary side (ChatGPT's Ultrafast mode, Gemini 3.7) and, more palpably, the open-source side with tiny sub-5 bytes parameter models.
 
 Some models currently in the limelight: `LFM 2.5`, `Qwen 3.5 4B`, `G9v3-3B`, `XHToken-Spark-X2.5-4B`, `Nemotron 3 Nano 4B` and `Gemma 4 E2B`. Tiny models have unquestionably improved and I regularly reach for these models on **repetitive, low-reasoning workloads** — the essential-but-mechanical parts of my workflow:
 
@@ -307,4 +307,4 @@ I don't think I will be reinventing the wheel with my assessment: Speed is good 
 
 Are we looking for a workhorse that knows what and how to do it, or are we looking for a very fast tiny model that needs to be surrounded by ropes and blinders so that with hand holding it goes from zero to one?
 
-*As I worked on this note Gemini 3.8 Flash got released. I tested it and as a constant critic of Gemini’s lackluster performance, they might back... Positioning Flash as a workhorse that's now fast and finally of some use might be paying off.*
+*As I worked on this note Gemini 3.8 Flash got released. I tested it and as a constant critic of Gemini’s lackluster performance, they might back… Positioning Flash as a workhorse that's now fast and finally of some use might be paying off.*
